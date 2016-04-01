@@ -1,10 +1,9 @@
-import './global.scss';
+import '../scss/global.scss';
 import alfrid , { Camera } from 'alfrid';
 
 let GL = alfrid.GL;
 
 window.addEventListener('load', _init);
-
 
 let camera, bAxis, bDotPlane;
 

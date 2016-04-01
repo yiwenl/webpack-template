@@ -12,7 +12,7 @@ function getOutput() {
 
 module.exports = {
   entry: {
-    app: ['./src/app.js']
+    app: ['./src/js/app.js']
   },
   stats: {
     cached: false,
@@ -33,27 +33,28 @@ module.exports = {
     filename:'bundle.js'
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loader: 'babel',
-      exclude: /node_modules/,
-      query: {
-        plugins: ['transform-runtime', 'add-module-exports'],
-        presets: ['es2015', 'stage-1']
-      }
-    },
-    {
-      test: /\.css$/,
-      loader: 'style!css'
-    },
-    {
-      test: /\.scss$/,
-      loader: prod ?
-        ExtractTextPlugin.extract("style-loader", `css-loader!autoprefixer-loader?browsers=last 3 version!sass-loader?includePaths[]=dist`) :
-        `style!css!autoprefixer?browsers=last 3 version!sass?includePaths[]=dist` 
-    },
-    { test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
-    { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ }
+    loaders: [
+      {
+        test: /\.js$/,
+        loader: 'babel',
+        exclude: /node_modules/,
+        query: {
+          plugins: ['transform-runtime', 'add-module-exports'],
+          presets: ['es2015', 'stage-1']
+        }
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css'
+      },
+      {
+        test: /\.scss$/,
+        loader: prod ?
+          ExtractTextPlugin.extract("style-loader", `css-loader!autoprefixer-loader?browsers=last 3 version!sass-loader?includePaths[]=dist`) :
+          `style!css!autoprefixer?browsers=last 3 version!sass?includePaths[]=dist` 
+      },
+      { test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
+      { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ }
     ]
   },
   plugins: prod ? [
