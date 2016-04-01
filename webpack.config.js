@@ -5,21 +5,14 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const prod = process.env.NODE_ENV === 'production';
 
-function getEntrySources() {
-  // if (!prod) {
-  //   return ['./test/main.js']
-  // }
-  return ['./src/index.js'];
-}
-
 
 function getOutput() {
-  return path.resolve(__dirname, prod ? "dist" : "dev" )
+  return path.resolve(__dirname, "dist" )
 }
 
 module.exports = {
   entry: {
-    app: getEntrySources()
+    app: ['./src/app.js']
   },
   stats: {
     cached: false,
