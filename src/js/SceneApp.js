@@ -11,11 +11,13 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initTextures() {
-
+		console.log('init textures');
 	}
 
 
 	_initViews() {
+		console.log('init views');
+		
 		this._bCopy = new alfrid.BatchCopy();
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();

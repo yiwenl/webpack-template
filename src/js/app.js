@@ -16,6 +16,7 @@ if(document.body) {
 
 function _init() {
 
+	//	LOADING ASSETS
 	if(assets.length > 0 ) {
 		document.body.classList.add('isLoading');
 
@@ -37,6 +38,8 @@ function _init() {
 
 
 function _onImageLoaded(o) {
+
+	//	ASSETS
 	console.log('Image Loaded : ', o);
 	document.body.classList.remove('isLoading');
 	window.assets = o;	
@@ -46,15 +49,19 @@ function _onImageLoaded(o) {
 
 
 function _init3D() {
+
 	//	CREATE CANVAS
 	let canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
 	document.body.appendChild(canvas);
 
+	//	INIT 3D TOOL
 	GL.init(canvas);
 
-
+	//	CREATE SCENE
 	let scene = new SceneApp();
 
+	//	INIT DAT-GUI
 	window.gui = new dat.GUI({width:300});
+
 }
