@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
-    "dev": "webpack-dev-server --hot --inline --colors --error-details --content-base dist/ ",
+    "dev": "webpack-dev-server --hot --inline --host 0.0.0.0 --colors --error-details --content-base dist/ ",
     "build": "NODE_ENV=production webpack --progress --colors --error-details"
   },
   "repository": {},
@@ -37,6 +37,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "glslify": "^5.0.2",
     "glslify-loader": "^1.0.2",
+    "ip": "^1.1.2",
     "node-sass": "^3.4.2",
     "path": "^0.12.7",
     "raw-loader": "^0.5.1",

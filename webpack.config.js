@@ -1,10 +1,13 @@
 /* eslint comma-dangle: 0 */
-const webpack = require('webpack');
-const path = require('path');
+const webpack           = require('webpack');
+const path              = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ip                = require('ip');
+const prod              = process.env.NODE_ENV === 'production';
 
-const prod = process.env.NODE_ENV === 'production';
+const serverIp = ip.address();
 
+// console.log('Serverip : ', serverIp, 'http://'+serverIp+':8080');
 
 function getOutput() {
   return path.resolve(__dirname, "dist" )
@@ -29,7 +32,6 @@ module.exports = {
   },
   output: {
     path: getOutput(),
-    publicPath: 'http://localhost:8080/',
     filename:'bundle.js'
   },
   module: {
