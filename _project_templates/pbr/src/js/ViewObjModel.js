@@ -18,12 +18,16 @@ class ViewObjModel extends alfrid.View {
 
 	_init() {
 		this._objLoader 	  = new alfrid.ObjLoader();
-		this._objLoader.load('./assets/004.obj', (mesh)=>this._onObjLoaded(mesh), false);
+		this._objLoader.load('./assets/model.obj', (mesh)=>this._onObjLoaded(mesh), false);
 	}
 
 	_onObjLoaded(mesh) {
 		this.mesh = mesh;
+		gui.add(this, 'roughness', 0, 1);
+		gui.add(this, 'specular', 0, 1);
+		gui.add(this, 'metallic', 0, 1);
 	}
+
 
 	render(textureRad, textureIrr, textureAO) {
 		if(!this.mesh) {

@@ -72,9 +72,6 @@ function _onImageLoaded(o) {
 
 
 function _init3D() {
-	//	INIT DAT-GUI
-	window.gui = new dat.GUI({width:300});
-
 	//	CREATE CANVAS
 	let canvas = document.createElement("canvas");
 	canvas.className = 'Main-Canvas';
@@ -82,6 +79,9 @@ function _init3D() {
 
 	//	INIT 3D TOOL
 	GL.init(canvas);
+
+	//	INIT DAT-GUI
+	window.gui = new dat.GUI({width:300});
 
 	//	CREATE SCENE
 	let scene = new SceneApp();
