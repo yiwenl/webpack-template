@@ -13,7 +13,6 @@ window.params = {
 
 const assets = [
 	{id:'aomap', url:'assets/aomap.jpg'},
-	{id:'objHead', url:'assets/004.obj', type:'binary'},
 	{id:'irr_posx', url:'assets/irr_posx.hdr', type:'binary'},
 	{id:'irr_posx', url:'assets/irr_posx.hdr', type:'binary'},
 	{id:'irr_posy', url:'assets/irr_posy.hdr', type:'binary'},
