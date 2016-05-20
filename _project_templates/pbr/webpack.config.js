@@ -2,18 +2,25 @@
 const webpack           = require('webpack');
 const path              = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const ip                = require('ip');
 const prod              = process.env.NODE_ENV === 'production';
-
-const serverIp = ip.address();
-
-// console.log('Serverip : ', serverIp, 'http://'+serverIp+':8080');
+const isDevelopment     = process.env.NODE_ENV === 'development';
+const ip                = require('ip');
+const serverIp          = ip.address();
 
 function getOutput() {
-  return path.resolve(__dirname, "dist" )
+
+  if(prod) {
+    return path.resolve(__dirname, "dist/assets/" )  
+  } else {
+    return path.resolve(__dirname, "dist/assets/" )  
+  }
+  
 }
 
 module.exports = {
+  hotPort: 8080,
+  cache: isDevelopment,
+  debug: isDevelopment,
   entry: {
     app: ['./src/js/app.js']
   },
@@ -32,7 +39,8 @@ module.exports = {
   },
   output: {
     path: getOutput(),
-    filename:'bundle.js'
+    filename:'js/bundle.js',
+    publicPath: isDevelopment ? `http://${serverIp}:8080/assets/` : ''
   },
   module: {
     loaders: [
@@ -60,12 +68,14 @@ module.exports = {
     ]
   },
   plugins: prod ? [
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         screw_ie8: true,
         warnings: false
       }
     }),
-    new ExtractTextPlugin('main.css')
-  ] : []
+    new ExtractTextPlugin('css/main.css')
+  ] : [new webpack.optimize.OccurenceOrderPlugin()]
 };

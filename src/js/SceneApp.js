@@ -8,6 +8,7 @@ class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
+		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
 	}
 
 	_initTextures() {
@@ -26,6 +27,7 @@ class SceneApp extends alfrid.Scene {
 
 
 	render() {
+		this.orbitalControl.ry.value += 0.01;
 		GL.clear(0, 0, 0, 0);
 		this._bAxis.draw();
 		this._bDots.draw();
