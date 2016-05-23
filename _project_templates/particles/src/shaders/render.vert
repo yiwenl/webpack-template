@@ -2,6 +2,7 @@
 
 precision highp float;
 attribute vec3 aVertexPosition;
+attribute vec3 aNormal;
 
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
@@ -12,6 +13,7 @@ uniform sampler2D textureExtra;
 uniform float percent;
 uniform float time;
 varying vec4 vColor;
+varying vec3 vNormal;
 
 void main(void) {
 	vec2 uv      = aVertexPosition.xy;
@@ -30,4 +32,6 @@ void main(void) {
 	vColor       = vec4(vec3(g), 1.0);
 
 	gl_PointSize = 1.0 + g * 3.0;
+
+	vNormal 	 = aNormal;
 }
