@@ -12,21 +12,22 @@ window.params = {
 };
 
 const assets = [
-	{id:'aomap', url:'assets/aomap.jpg'},
-	{id:'irr_posx', url:'assets/irr_posx.hdr', type:'binary'},
-	{id:'irr_posx', url:'assets/irr_posx.hdr', type:'binary'},
-	{id:'irr_posy', url:'assets/irr_posy.hdr', type:'binary'},
-	{id:'irr_posz', url:'assets/irr_posz.hdr', type:'binary'},
-	{id:'irr_negx', url:'assets/irr_negx.hdr', type:'binary'},
-	{id:'irr_negy', url:'assets/irr_negy.hdr', type:'binary'},
-	{id:'irr_negz', url:'assets/irr_negz.hdr', type:'binary'},
+	{id:'aomap', url:'assets/img/aomap.jpg'},
+	{id:'objHead', url:'assets/obj/model.obj', type:'text'},
+	{id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary'},
+	{id:'irr_posx', url:'assets/img/irr_posx.hdr', type:'binary'},
+	{id:'irr_posy', url:'assets/img/irr_posy.hdr', type:'binary'},
+	{id:'irr_posz', url:'assets/img/irr_posz.hdr', type:'binary'},
+	{id:'irr_negx', url:'assets/img/irr_negx.hdr', type:'binary'},
+	{id:'irr_negy', url:'assets/img/irr_negy.hdr', type:'binary'},
+	{id:'irr_negz', url:'assets/img/irr_negz.hdr', type:'binary'},
 
-	{id:'rad_posx', url:'assets/rad_posx.hdr', type:'binary'},
-	{id:'rad_posy', url:'assets/rad_posy.hdr', type:'binary'},
-	{id:'rad_posz', url:'assets/rad_posz.hdr', type:'binary'},
-	{id:'rad_negx', url:'assets/rad_negx.hdr', type:'binary'},
-	{id:'rad_negy', url:'assets/rad_negy.hdr', type:'binary'},
-	{id:'rad_negz', url:'assets/rad_negz.hdr', type:'binary'}
+	{id:'rad_posx', url:'assets/img/rad_posx.hdr', type:'binary'},
+	{id:'rad_posy', url:'assets/img/rad_posy.hdr', type:'binary'},
+	{id:'rad_posz', url:'assets/img/rad_posz.hdr', type:'binary'},
+	{id:'rad_negx', url:'assets/img/rad_negx.hdr', type:'binary'},
+	{id:'rad_negy', url:'assets/img/rad_negy.hdr', type:'binary'},
+	{id:'rad_negz', url:'assets/img/rad_negz.hdr', type:'binary'}
 ];
 
 if(document.body) {

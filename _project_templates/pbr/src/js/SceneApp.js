@@ -3,6 +3,14 @@
 import alfrid , { Scene } from 'alfrid';
 import ViewObjModel from './ViewObjModel';
 
+window.getAsset = function(id) {
+	for(var i=0; i<assets.length; i++) {
+		if(id === assets[i].id) {
+			return assets[i].file;
+		}
+	}
+}
+
 const GL = alfrid.GL;
 
 class SceneApp extends alfrid.Scene {
@@ -12,15 +20,6 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initTextures() {
-		console.log('init textures');
-		function getAsset(id) {
-			for(var i=0; i<assets.length; i++) {
-				if(id === assets[i].id) {
-					return assets[i].file;
-				}
-			}
-		}
-
 		let irr_posx = alfrid.HDRLoader.parse(getAsset('irr_posx'))
 		let irr_negx = alfrid.HDRLoader.parse(getAsset('irr_negx'))
 		let irr_posy = alfrid.HDRLoader.parse(getAsset('irr_posy'))

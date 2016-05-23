@@ -9,20 +9,19 @@ class ViewObjModel extends alfrid.View {
 	
 	constructor() {
 		super(vs, fs);
-		this.roughness = .9;
-		this.specular = 0;
-		this.metallic = 0;
-		this.baseColor = [1, 1, 1];
+		
 	}
 
 
 	_init() {
-		this._objLoader 	  = new alfrid.ObjLoader();
-		this._objLoader.load('./assets/model.obj', (mesh)=>this._onObjLoaded(mesh), false);
-	}
+		let strObj = getAsset('objHead');
+		this.mesh = alfrid.ObjLoader.parse(strObj);
 
-	_onObjLoaded(mesh) {
-		this.mesh = mesh;
+		this.roughness = .9;
+		this.specular = 0;
+		this.metallic = 0;
+		this.baseColor = [1, 1, 1];
+		
 		gui.add(this, 'roughness', 0, 1);
 		gui.add(this, 'specular', 0, 1);
 		gui.add(this, 'metallic', 0, 1);
