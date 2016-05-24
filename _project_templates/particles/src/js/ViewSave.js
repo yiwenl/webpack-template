@@ -2,10 +2,10 @@
 
 import alfrid from 'alfrid';
 
-const vsSave = require("../shaders/save.vert");
-const fsSave = require("../shaders/save.frag");
+const vsSave = require('../shaders/save.vert');
+const fsSave = require('../shaders/save.frag');
 const GL = alfrid.GL;
-const random = function(min, max) { return min + Math.random() * (max - min);	}
+const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 class ViewSave extends alfrid.View {
 	
@@ -27,12 +27,12 @@ class ViewSave extends alfrid.View {
 		let ux, uy;
 		let range = 3;
 
-		for(let j=0; j<numParticles; j++) {
-			for(let i=0; i<numParticles; i++) {
+		for(let j = 0; j < numParticles; j++) {
+			for(let i = 0; i < numParticles; i++) {
 				positions.push([random(-range, range), random(-range, range), random(-range, range)]);
 
-				ux = i/numParticles*2.0-1.0+.5/numParticles;
-				uy = j/numParticles*2.0-1.0+.5/numParticles;
+				ux = i / numParticles * 2.0 - 1.0 + .5 / numParticles;
+				uy = j / numParticles * 2.0 - 1.0 + .5 / numParticles;
 
 				extras.push([Math.random(), Math.random(), Math.random()]);
 				coords.push([ux, uy]);
@@ -55,7 +55,7 @@ class ViewSave extends alfrid.View {
 	}
 
 
-	render(state=0) {
+	render(state = 0) {
 		this.shader.bind();
 		if(state === 0) {
 			GL.draw(this.mesh);	

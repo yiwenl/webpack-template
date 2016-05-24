@@ -2,7 +2,7 @@
 
 import alfrid from 'alfrid';
 
-const frag = require("../shaders/addvel.frag");
+const frag = require('../shaders/addvel.frag');
 
 let GL = alfrid.GL;
 
@@ -21,10 +21,10 @@ class ViewAddVel extends alfrid.View {
 	render(texturePos, textureVel) {
 		this.shader.bind();
 
-		this.shader.uniform("texturePos", "uniform1i", 0);
+		this.shader.uniform('texturePos', 'uniform1i', 0);
 		texturePos.bind(0);
 
-		this.shader.uniform("textureVel", "uniform1i", 1);
+		this.shader.uniform('textureVel', 'uniform1i', 1);
 		textureVel.bind(1);
 
 		GL.draw(this.mesh);

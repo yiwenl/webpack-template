@@ -1,6 +1,6 @@
 // SceneApp.js
 
-import alfrid , { Scene } from 'alfrid';
+import alfrid, { Scene } from 'alfrid';
 import ViewAddVel from './ViewAddVel';
 import ViewSave from './ViewSave';
 import ViewRender from './ViewRender';
@@ -25,7 +25,7 @@ class SceneApp extends alfrid.Scene {
 		const o = {
 			minFilter:GL.NEAREST,
 			magFilter:GL.NEAREST
-		}
+		};
 
 		this._fboCurrentPos = new alfrid.FrameBuffer(numParticles, numParticles, o);
 		this._fboTargetPos  = new alfrid.FrameBuffer(numParticles, numParticles, o);
@@ -73,7 +73,7 @@ class SceneApp extends alfrid.Scene {
 		//	Update Velocity : bind target Velocity, render simulation with current velocity / current position
 		this._fboTargetVel.bind();
 		GL.clear(0, 0, 0, 1);
-		this._vSim.render(this._fboCurrentVel.getTexture(), this._fboCurrentPos.getTexture(), this._fboExtra.getTexture() );
+		this._vSim.render(this._fboCurrentVel.getTexture(), this._fboCurrentPos.getTexture(), this._fboExtra.getTexture());
 		this._fboTargetVel.unbind();
 
 
@@ -103,7 +103,7 @@ class SceneApp extends alfrid.Scene {
 			this.updateFbo();
 		}
 
-		let p = this._count/params.skipCount;
+		let p = this._count / params.skipCount;
 
 		GL.clear(0, 0, 0, 0);
 		this._bAxis.draw();

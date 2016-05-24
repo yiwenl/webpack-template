@@ -1,5 +1,5 @@
 import '../scss/global.scss';
-import alfrid , { Camera } from 'alfrid';
+import alfrid, { Camera } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
@@ -10,7 +10,7 @@ window.params = {
 	numParticles:256,
 	skipCount:10,
 	maxRadius: 2.5
-}
+};
 
 if(document.body) {
 	_init();
@@ -22,14 +22,14 @@ if(document.body) {
 function _init() {
 
 	//	LOADING ASSETS
-	if(assets.length > 0 ) {
+	if(assets.length > 0) {
 		document.body.classList.add('isLoading');
 
 		let loader = new AssetsLoader({
 			assets:assets
-		}).on('error', function(error) {
+		}).on('error', function (error) {
 			console.error(error);
-		}).on('progress', function(p) {
+		}).on('progress', function (p) {
 			// console.log('Progress : ', p);
 			let loader = document.body.querySelector('.Loading-Bar');
 			if(loader) loader.style.width = (p * 100).toFixed(2) + '%';
@@ -56,7 +56,7 @@ function _onImageLoaded(o) {
 function _init3D() {
 
 	//	CREATE CANVAS
-	let canvas = document.createElement("canvas");
+	let canvas = document.createElement('canvas');
 	canvas.className = 'Main-Canvas';
 	document.body.appendChild(canvas);
 
@@ -67,7 +67,7 @@ function _init3D() {
 	let scene = new SceneApp();
 
 	//	INIT DAT-GUI
-	window.gui = new dat.GUI({width:300});
+	window.gui = new dat.GUI({ width:300 });
 	gui.add(params, 'maxRadius', 0.0, 10.0);
 
 }

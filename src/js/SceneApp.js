@@ -1,6 +1,6 @@
 // SceneApp.js
 
-import alfrid , { Scene } from 'alfrid';
+import alfrid, { Scene } from 'alfrid';
 
 const GL = alfrid.GL;
 
@@ -18,7 +18,7 @@ class SceneApp extends alfrid.Scene {
 
 	_initViews() {
 		console.log('init views');
-		
+
 		this._bCopy = new alfrid.BatchCopy();
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
