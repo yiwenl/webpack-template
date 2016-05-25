@@ -1,12 +1,13 @@
 import '../scss/global.scss';
 import alfrid, { Camera } from 'alfrid';
-import bongiovi from 'bongiovi';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 
 const GL = alfrid.GL;
-const assets = [];
+const assets = [
+	// { id:'noise', url:'assets/img/noise.jpg' },
+];
 
 if(document.body) {
 	_init();
@@ -63,10 +64,10 @@ function _init3D() {
 	//	INIT 3D TOOL
 	GL.init(canvas);
 
-	//	CREATE SCENE
-	const scene = new SceneApp();
-
 	//	INIT DAT-GUI
 	window.gui = new dat.GUI({ width:300 });
+
+	//	CREATE SCENE
+	const scene = new SceneApp();
 
 }
