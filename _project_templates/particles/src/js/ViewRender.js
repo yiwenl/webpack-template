@@ -51,6 +51,7 @@ class ViewRender extends alfrid.View {
 		this.shader.uniform('textureExtra', 'uniform1i', 2);
 		textureExtra.bind(2);
 
+		this.shader.uniform('uViewport', 'vec2', [GL.width, GL.height]);
 		this.shader.uniform('percent', 'float', p);
 		this.shader.uniform('time', 'float', this.time);
 		GL.draw(this.mesh);

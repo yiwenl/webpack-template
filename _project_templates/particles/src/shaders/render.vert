@@ -12,8 +12,12 @@ uniform sampler2D textureNext;
 uniform sampler2D textureExtra;
 uniform float percent;
 uniform float time;
+uniform vec2 uViewport;
+
 varying vec4 vColor;
 varying vec3 vNormal;
+
+const float radius = 0.01;
 
 void main(void) {
 	vec2 uv      = aVertexPosition.xy;
@@ -31,7 +35,8 @@ void main(void) {
 	g 			 = mix(g, 1.0, .5);
 	vColor       = vec4(vec3(g), 1.0);
 
-	gl_PointSize = 1.0 + g * 3.0;
+	float distOffset = uViewport.y * uProjectionMatrix[1][1] * radius / gl_Position.w;
+    gl_PointSize = distOffset * (1.0 + extra.x * 1.0);
 
 	vNormal 	 = aNormal;
 }
