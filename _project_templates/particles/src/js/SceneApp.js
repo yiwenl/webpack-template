@@ -14,7 +14,9 @@ class SceneApp extends alfrid.Scene {
 		GL.enableAlphaBlending();
 
 		this._count = 0;
-		this.orbitalControl.radius.value = 15;
+		this.camera.setPerspective(Math.PI/2, GL.aspectRatio, .1, 100);
+		this.orbitalControl.radius.value = 10;
+		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
 	}
 
 	_initTextures() {
