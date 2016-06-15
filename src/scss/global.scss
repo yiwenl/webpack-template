@@ -42,7 +42,7 @@ h1,h2,h3,h4,text,p {
 	z-index: 999;
 	color:white;
 
-	opacity: 1;
+	opacity: 0;
 	transition:opacity .5s ease-out;
 
 	.isLoading & {
