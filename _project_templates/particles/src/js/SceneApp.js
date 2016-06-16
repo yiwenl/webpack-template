@@ -1,12 +1,14 @@
 // SceneApp.js
 
-import alfrid, { Scene } from 'alfrid';
+import alfrid, { Scene, GL } from 'alfrid';
 import ViewAddVel from './ViewAddVel';
 import ViewSave from './ViewSave';
 import ViewRender from './ViewRender';
 import ViewSim from './ViewSim';
 
-const GL = alfrid.GL;
+window.getAsset = function(id) {
+	return assets.find( (a) => a.id === id).file;
+}
 
 class SceneApp extends alfrid.Scene {
 	constructor() {

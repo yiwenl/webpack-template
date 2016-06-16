@@ -1,17 +1,11 @@
 // SceneApp.js
 
-import alfrid, { Scene } from 'alfrid';
+import alfrid, { Scene, GL } from 'alfrid';
 import ViewObjModel from './ViewObjModel';
 
-window.getAsset = function (id) {
-	for(var i = 0; i < assets.length; i++) {
-		if(id === assets[i].id) {
-			return assets[i].file;
-		}
-	}
-};
-
-const GL = alfrid.GL;
+window.getAsset = function(id) {
+	return assets.find( (a) => a.id === id).file;
+}
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
