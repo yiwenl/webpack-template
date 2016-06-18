@@ -14,7 +14,14 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_initTextures() {
-		this._textureIrr = alfrid.GLCubeTexture.parseDDS(getAsset('irradiance'));
+		let irr_posx = alfrid.HDRLoader.parse(getAsset('irr_posx'));
+		let irr_negx = alfrid.HDRLoader.parse(getAsset('irr_negx'));
+		let irr_posy = alfrid.HDRLoader.parse(getAsset('irr_posy'));
+		let irr_negy = alfrid.HDRLoader.parse(getAsset('irr_negy'));
+		let irr_posz = alfrid.HDRLoader.parse(getAsset('irr_posz'));
+		let irr_negz = alfrid.HDRLoader.parse(getAsset('irr_negz'));
+
+		this._textureIrr = new alfrid.GLCubeTexture([irr_posx, irr_negx, irr_posy, irr_negy, irr_posz, irr_negz]);
 		this._textureRad = alfrid.GLCubeTexture.parseDDS(getAsset('radiance'));
 
 		this._textureAO = new alfrid.GLTexture(getAsset('aomap'));
