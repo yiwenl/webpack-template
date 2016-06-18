@@ -55,14 +55,19 @@ function _init() {
 
 
 function _onImageLoaded(o) {
-
 	//	ASSETS
 	console.log('Image Loaded : ', o);
-	document.body.classList.remove('isLoading');
-	window.assets = o;	
+	window.assets = o;
+	const loader = document.body.querySelector('.Loading-Bar');
+	loader.style.width = '100%';
 
 	_init3D();
+
+	setTimeout(()=> {
+		document.body.classList.remove('isLoading');
+	}, 250);
 }
+
 
 
 function _init3D() {
@@ -79,7 +84,6 @@ function _init3D() {
 
 	//	CREATE SCENE
 	let scene = new SceneApp();
-
 	
 	gui.add(params, 'gamma', 1, 5);
 	gui.add(params, 'exposure', 1, 25);

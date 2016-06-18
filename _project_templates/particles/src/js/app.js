@@ -7,7 +7,7 @@ import dat from 'dat-gui';
 const GL = alfrid.GL;
 const assets = [];
 window.params = {
-	numParticles:256,
+	numParticles:256*2,
 	skipCount:10,
 	maxRadius: 2.5
 };
@@ -43,13 +43,17 @@ function _init() {
 
 
 function _onImageLoaded(o) {
-
 	//	ASSETS
 	console.log('Image Loaded : ', o);
-	document.body.classList.remove('isLoading');
-	window.assets = o;	
+	window.assets = o;
+	const loader = document.body.querySelector('.Loading-Bar');
+	loader.style.width = '100%';
 
 	_init3D();
+
+	setTimeout(()=> {
+		document.body.classList.remove('isLoading');
+	}, 250);
 }
 
 

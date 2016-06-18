@@ -44,18 +44,21 @@ function _init() {
 
 
 function _onImageLoaded(o) {
-
 	//	ASSETS
 	console.log('Image Loaded : ', o);
-	document.body.classList.remove('isLoading');
 	window.assets = o;
+	const loader = document.body.querySelector('.Loading-Bar');
+	loader.style.width = '100%';
 
 	_init3D();
+
+	setTimeout(()=> {
+		document.body.classList.remove('isLoading');
+	}, 250);
 }
 
 
 function _init3D() {
-
 	//	CREATE CANVAS
 	const canvas = document.createElement('canvas');
 	canvas.className = 'Main-Canvas';

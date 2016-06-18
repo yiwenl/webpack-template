@@ -29,22 +29,30 @@ h1,h2,h3,h4,text,p {
 	left:0px;
 	position: absolute;
 	user-select:none;
+
+	opacity: 1;
+	transition: opacity .5s ease-out .25s;
+
+	.isLoading & {
+		opacity: 0;
+	}
 }
 
 
 .Message {
 	position: absolute;
+	z-index: 999;
 	width: 100%;
 	top: calc(50% - 50px);
 	text-align: center;
-	letter-spacing: 10px;
-	z-index: 999;
+	letter-spacing: 11px;
 	color:white;
 
 	opacity: 0;
-	transition:opacity .5s ease-out;
+	transition:opacity .5s ease-out, letter-spacing .5s ease-out;
 
 	.isLoading & {
+		letter-spacing: 10px;
 		opacity: 1;
 	}
 }
@@ -52,7 +60,7 @@ h1,h2,h3,h4,text,p {
 .Loading-Bar {
 	position: absolute;
 	z-index: 998;
-	width: 0%;
+	width: 100%;
 	height:1px;
 	top:50%;
 	background:rgba(255, 255, 255, .5);
