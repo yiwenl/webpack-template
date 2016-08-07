@@ -11,6 +11,7 @@ class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();
+		this.orbitalControl.radius.value = 7;
 	}
 
 	_initTextures() {

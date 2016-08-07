@@ -29,9 +29,6 @@ class ViewObjModel extends alfrid.View {
 
 
 	render(textureRad, textureIrr, textureAO) {
-		if(!this.mesh) {
-			return;
-		}
 		this.shader.bind();
 
 		this.shader.uniform('uAoMap', 'uniform1i', 0);
