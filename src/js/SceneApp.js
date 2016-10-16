@@ -2,11 +2,7 @@
 
 import alfrid, { Scene, GL } from 'alfrid';
 
-window.getAsset = function(id) {
-	return assets.find( (a) => a.id === id).file;
-}
-
-class SceneApp extends alfrid.Scene {
+class SceneApp extends Scene {
 	constructor() {
 		super();
 		GL.enableAlphaBlending();

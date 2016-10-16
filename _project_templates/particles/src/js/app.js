@@ -3,6 +3,7 @@ import alfrid, { Camera } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
+import Stats from 'stats.js';
 
 const GL = alfrid.GL;
 const assets = [];
@@ -73,5 +74,10 @@ function _init3D() {
 	//	INIT DAT-GUI
 	window.gui = new dat.GUI({ width:300 });
 	gui.add(params, 'maxRadius', 0.0, 10.0);
+
+	//	STATS
+	const stats = new Stats();
+	document.body.appendChild(stats.domElement);
+	alfrid.Scheduler.addEF(()=>stats.update());
 
 }

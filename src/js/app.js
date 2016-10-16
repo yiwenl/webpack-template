@@ -3,10 +3,11 @@ import alfrid, { Camera } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
+import Stats from 'stats.js';
 
 const GL = alfrid.GL;
 const assets = [
-	// { id:'noise', url:'assets/img/noise.jpg' },
+	// { id:'noise', url:'assets/img/noise.jpg' }
 ];
 
 if(document.body) {
@@ -15,6 +16,10 @@ if(document.body) {
 	window.addEventListener('DOMContentLoaded', _init);
 }
 
+
+window.getAsset = function(id) {
+	return window.assets.find( (a) => a.id === id).file;
+}
 
 function _init() {
 
@@ -73,4 +78,8 @@ function _init3D() {
 	//	CREATE SCENE
 	const scene = new SceneApp();
 
+	//	STATS
+	const stats = new Stats();
+	document.body.appendChild(stats.domElement);
+	alfrid.Scheduler.addEF(()=>stats.update());
 }
