@@ -1,8 +1,8 @@
 {
   "name": "webpack-boilerplate",
   "version": "1.0.1",
-  "description": "A enterframe tool",
-  "main": "build/scheduler.js",
+  "description": "Webpack boilerplate",
+  "main": "src/js/app.js",
   "scripts": {
     "lint": "eslint -c .eslintrc src/**",
     "lint:fix": "eslint -c .eslintrc --fix src/**",
@@ -15,7 +15,7 @@
   "author": "Yi-Wen Lin",
   "license": "ISC",
   "devDependencies": {
-    "alfrid": "0.1.16",
+    "alfrid": "0.1.17",
     "assets-loader": "^0.4.0",
     "autoprefixer-loader": "^3.2.0",
     "babel": "^6.5.2",
