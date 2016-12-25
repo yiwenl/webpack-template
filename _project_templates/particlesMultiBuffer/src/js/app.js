@@ -1,12 +1,12 @@
 import '../scss/global.scss';
-import alfrid, { Camera } from 'alfrid';
+import alfrid, { GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import Stats from 'stats.js';
+import assets from './asset-list';
+import Assets from './Assets';
 
-const GL = alfrid.GL;
-const assets = [];
 window.params = {
 	numParticles:256*2,
 	skipCount:10,
@@ -59,25 +59,29 @@ function _onImageLoaded(o) {
 
 
 function _init3D() {
-
+	
 	//	CREATE CANVAS
-	let canvas = document.createElement('canvas');
+	const canvas = document.createElement('canvas');
 	canvas.className = 'Main-Canvas';
 	document.body.appendChild(canvas);
 
 	//	INIT 3D TOOL
 	GL.init(canvas);
 
+	//	INIT ASSETS
+	Assets.init();
+
+	//	INIT DAT-GUI
+	window.gui = new dat.GUI({ width:300 });
+
 	//	CREATE SCENE
-	let scene = new SceneApp();
+	const scene = new SceneApp();
 
 	//	STATS
 	const stats = new Stats();
 	document.body.appendChild(stats.domElement);
 	alfrid.Scheduler.addEF(()=>stats.update());
 
-	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
 	gui.add(params, 'maxRadius', 0.0, 10.0);
 
 }

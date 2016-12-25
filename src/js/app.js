@@ -1,13 +1,11 @@
 import '../scss/global.scss';
-import alfrid, { Camera } from 'alfrid';
+import alfrid, { GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import Stats from 'stats.js';
 import assets from './asset-list';
 import Assets from './Assets';
-
-const GL = alfrid.GL;
 
 if(document.body) {
 	_init();
