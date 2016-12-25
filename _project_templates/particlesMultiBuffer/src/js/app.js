@@ -73,6 +73,7 @@ function _init3D() {
 
 	//	INIT DAT-GUI
 	window.gui = new dat.GUI({ width:300 });
+	gui.add(params, 'maxRadius', 0.0, 10.0);
 
 	//	CREATE SCENE
 	const scene = new SceneApp();
@@ -81,7 +82,5 @@ function _init3D() {
 	const stats = new Stats();
 	document.body.appendChild(stats.domElement);
 	alfrid.Scheduler.addEF(()=>stats.update());
-
-	gui.add(params, 'maxRadius', 0.0, 10.0);
 
 }
