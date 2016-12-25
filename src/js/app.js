@@ -5,6 +5,7 @@ import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import Stats from 'stats.js';
 import assets from './asset-list';
+import Assets from './Assets';
 
 const GL = alfrid.GL;
 
@@ -69,6 +70,9 @@ function _init3D() {
 
 	//	INIT 3D TOOL
 	GL.init(canvas);
+
+	//	INIT ASSETS
+	Assets.init();
 
 	//	INIT DAT-GUI
 	window.gui = new dat.GUI({ width:300 });
