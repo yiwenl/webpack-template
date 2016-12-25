@@ -16,9 +16,10 @@ if(document.body) {
 }
 
 
-window.getAsset = function(id) {
-	return window.assets.find( (a) => a.id === id).file;
-}
+window.params = {
+	gamma:2.2,
+	exposure:5
+};
 
 function _init() {
 

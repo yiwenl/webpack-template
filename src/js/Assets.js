@@ -16,7 +16,7 @@ const getExtension = function(mFile) {
 }
 
 Assets.init = function() {
-
+	let hdrCubemaps = {};
 	_assets = assetsToLoad.map((o)=> {
 		const ext = getExtension(o.url);
 		const file = getAsset(o.id);
@@ -32,6 +32,23 @@ Assets.init = function() {
 				};
 				break;
 
+			case 'hdr':
+				let cubemapName = o.id.split('_')[0];
+				texture = alfrid.HDRLoader.parse(file);
+
+				const oAsset = {
+					id:o.id,
+					file:texture
+				};
+
+				if(!hdrCubemaps[cubemapName]) {
+					hdrCubemaps[cubemapName] = [];
+				}
+
+				hdrCubemaps[cubemapName].push(oAsset);
+				return oAsset;
+
+				break;
 			case 'dds':
 				texture = GLCubeTexture.parseDDS(file);
 				return {
@@ -50,6 +67,27 @@ Assets.init = function() {
 		}
 
 	});
+
+	for(let s in hdrCubemaps) {
+		if(hdrCubemaps[s].length == 6) {
+			console.log('Generate Cubemap :', s);
+
+			const ary = [
+				Assets.get(`${s}_posx`),
+				Assets.get(`${s}_negx`),
+				Assets.get(`${s}_posy`),
+				Assets.get(`${s}_negy`),
+				Assets.get(`${s}_posz`),
+				Assets.get(`${s}_negz`)
+			];
+
+			const texture = new alfrid.GLCubeTexture(ary);
+			_assets.push({
+				id:s,
+				file:texture
+			})
+		}
+	}
 
 	console.debug('ASSETS:');
 	console.table(_assets);
