@@ -4,11 +4,9 @@ import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
 import dat from 'dat-gui';
 import Stats from 'stats.js';
+import assets from './asset-list';
 
 const GL = alfrid.GL;
-const assets = [
-	// { id:'noise', url:'assets/img/noise.jpg' }
-];
 
 if(document.body) {
 	_init();

@@ -64,7 +64,9 @@ module.exports = {
           `style!css!autoprefixer?browsers=last 3 version!sass?includePaths[]=dist` 
       },
       { test: /\.(glsl|frag|vert)$/, loader: 'raw', exclude: /node_modules/ },
-      { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ }
+      { test: /\.(glsl|frag|vert)$/, loader: 'glslify', exclude: /node_modules/ },
+      { test: /\.png$/, loader: "url-loader?limit=100000", exclude: /node_modules/  },
+      { test: /\.jpg$/, loader: "file-loader", exclude: /node_modules/  }
     ]
   },
   plugins: prod ? [
@@ -72,6 +74,7 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
+        drop_console: true,
         screw_ie8: true,
         warnings: false
       }

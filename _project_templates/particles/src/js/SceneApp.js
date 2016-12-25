@@ -115,9 +115,9 @@ class SceneApp extends alfrid.Scene {
 
 		this._vRender.render(this._fboTargetPos.getTexture(), this._fboCurrentPos.getTexture(), p, this._fboExtra.getTexture());
 
-		// const size = 128;
-		// GL.viewport(0, 0, size, size);
-		// this._bCopy.draw(this._fboExtra.getTexture());
+		const size = 128;
+		GL.viewport(0, 0, size, size);
+		this._bCopy.draw(this._fboTargetPos.getTexture());
 	}
 
 
