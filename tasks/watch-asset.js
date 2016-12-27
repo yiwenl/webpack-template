@@ -33,8 +33,15 @@ function saveFile(str)  {
 	});
 }
 
+function isDir(mPath) {
+	return fs.lstatSync(mPath).isDirectory()
+}
+
 function getAssetsInDir(mSourceDir, mCallback) {
 	fs.readdir(mSourceDir, (err, files) => {
+
+		const assetPath = mSourceDir.replace('./dist/', '');
+		console.log('Dir path :', mSourceDir, assetPath);
 
 		//	ERROR GETTING FOLDER
 		if(err) {
@@ -42,18 +49,50 @@ function getAssetsInDir(mSourceDir, mCallback) {
 			return;
 		}
 
-		const assets = files.filter((f)=> {
+		let assets = files.filter((f)=> {
 			return f.indexOf('DS_Store') === -1;
 		});
 
-		const assetPath = mSourceDir.replace('./dist/', '');
-		console.log(mSourceDir, assetPath);
-		const assetsPaths = assets.map((f) => {
+		// console.log('Assets in ', mSourceDir, assets);
+
+		for(let i=0; i<assets.length; i++) {
+			let a = assets[i];
+			// console.log('is dir ? ', a, fs.lstatSync(`${mSourceDir}/${a}`).isDirectory());
+		}
+
+
+		const folders = assets.filter((a)=> {
+			return isDir(`${mSourceDir}/${a}`);
+		});
+
+		assets = assets.filter((a)=> {
+			return !isDir(`${mSourceDir}/${a}`);
+		});
+		
+		assets = assets.map((f) => {
 			return `${assetPath}/${f}`;
 		});
 
-		//	RETURN ASSETS IN FOLDER
-		mCallback(assetsPaths);
+		console.log('Folders:', assets);
+
+		if(folders.length == 0) {
+			mCallback(assets);
+		} else {
+			let count = 0;
+			const onAssets = (a) => {
+				assets = assets.concat(a);
+				count ++;
+				if(count === folders.length) {
+					mCallback(assets);	
+				}
+			}	
+
+			for(let i=0; i<folders.length; i++) {
+				let a = folders[i];
+				getAssetsInDir(`${mSourceDir}/${a}`, onAssets);
+			}
+		}
+		
 	});
 }
 
@@ -120,6 +159,9 @@ function generateAssetList() {
 		}
 	});
 }
+
+
+// getAssets();
 
 function loop() {
 	if(needUpdate) {
