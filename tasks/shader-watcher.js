@@ -25,7 +25,10 @@ let watcherViews = watcher([PATH_SRC]);
 
 function startWatch() {
 	watcherViews.on('all',(event, file) => {
+		if(file.indexOf('.DS_Store') > -1) return;
 		console.log('Event:', event, 'file :' , file);
+		if(event !== 'add' && event !== 'change') return;
+
 		getShaderImports(file, (shaderImports) => onFile(shaderImports));
 	});
 }
@@ -98,14 +101,6 @@ function generateFragmentShader(mName) {
 	});
 }
 
-function getShaderType(mName) {
-	if(mName.split('.')[1] === 'vert') {
-		return 'vertex';
-	} else {
-		return 'frag';
-	}
-}
-
 function isVertexShader(mName) {
-	return getShaderType === 'vertex';
+	return mName.indexOf('.vert') > -1;
 }
