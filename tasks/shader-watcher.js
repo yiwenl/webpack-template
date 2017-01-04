@@ -2,11 +2,12 @@
 
 'use strict';
 
-const fs         = require('fs');
-const path       = require('path');
-const findFolder = require('./find-folder');
-const watcher    = require('./watch');
-const copyFile   = require('./copy-file');
+const fs                = require('fs');
+const path              = require('path');
+const findFolder        = require('./find-folder');
+const watcher           = require('./watch');
+const copyFile          = require('./copy-file');
+const checkExtension    = require('./checkExtension');
 
 const PATH_SRC          = './src';
 const TEMPLATE_VERTEX   = './tasks/basic.vert';
@@ -26,6 +27,7 @@ let watcherViews = watcher([PATH_SRC]);
 function startWatch() {
 	watcherViews.on('all',(event, file) => {
 		if(file.indexOf('.DS_Store') > -1) return;
+		if(!checkExtension(file, ['js'])) return;
 		console.log('Event:', event, 'file :' , file);
 		if(event !== 'add' && event !== 'change') return;
 
