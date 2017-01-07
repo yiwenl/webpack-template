@@ -8,9 +8,6 @@ attribute vec3 aNormal;
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
-uniform vec3 color;
-uniform float uTime;
-uniform vec2 uv;
 
 varying vec2 vTextureCoord;
 varying vec3 vNormal;

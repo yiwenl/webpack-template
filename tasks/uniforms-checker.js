@@ -16,6 +16,14 @@ const regUniform     = /shader\.uniform\(.*/g;
 const regUniformGLSL = /uniform\s.+/g;
 const regUniformLast = /uniform\s.+;/g;
 
+const uniformMapping = {
+	float: 'uniform1f',
+	vec2: 'uniform2fv',
+	vec3: 'uniform3fv',
+	vec4: 'uniform4fv',
+	mat3: 'uniformMatrix3fv',
+	mat4: 'uniformMatrix4fv'
+};
 
 let shaderPath;
 
@@ -47,7 +55,7 @@ function onFileChange(mPath) {
 	let results;
 
 	parseJS(mPath, (results) => {
-		console.log('Results:', results);
+		// console.log('Results:', results);
 
 		if(results.shaders.length == 0) return;
 
@@ -131,6 +139,18 @@ function parseJS(mPath, mCallback) {
 function getUniforms(mFile, mCb) {
 	let uniforms = getAllMatches(mFile, regUniform);
 
+	const getUniformType = (mType) => {
+		for(let s in uniformMapping) {
+			if(s === mType) {
+				return s;
+			} else if(uniformMapping[s] === mType) {
+				return s;
+			}
+		}
+
+		return mType;
+	}
+
 	uniforms = uniforms.map((u) => {
 		let s = replace(u, '"', "");
 		s = replace(s, "'");
@@ -138,7 +158,7 @@ function getUniforms(mFile, mCb) {
 		s = s.split(')')[0];
 		const ary = s.split(', ');
 		const uniformName = ary[0];
-		const uniformType = ary[1];
+		const uniformType = getUniformType(ary[1]);
 
 		return {
 			uniformName,
@@ -146,11 +166,12 @@ function getUniforms(mFile, mCb) {
 		};
 	});
 
+
+	uniforms = uniforms.filter((u)=> {
+		return u.uniformType !== 'uniform1i';
+	});
+
 	mCb(uniforms);
-}
-
-function readShader(mPath, mCallback) {
-
 }
 
 function getShaderUniforms(mShaderPath, mCb) {
@@ -161,7 +182,8 @@ function getShaderUniforms(mShaderPath, mCb) {
 			let uniformsGlsl = getAllMatches(str, regUniformGLSL);
 
 			uniformsGlsl = uniformsGlsl.map((u)=> {
-				const s = u.replace(';', '');
+				let s = u.replace(';', '');
+				s = s.replace(/(\t)*/g, '');
 				const tmp = s.split(' ');
 				const uniformType = tmp[1];
 				const uniformName = tmp[2];
@@ -191,8 +213,10 @@ function addUniforms(mPath, mUniformsToAdd) {
 
 			let strUniform = '\n';
 			mUniformsToAdd.forEach((uniform)=> {
-				strUniform += `uniform ${uniform.uniformType} ${uniform.uniformName};\n`;
+				strUniform += `uniform ${uniform.uniformType} \t\t${uniform.uniformName};\n`;
 			});
+
+			strUniform = strUniform.substring(0, strUniform.length-1);
 
 			str = insertString(str, strUniform, index);
 
@@ -205,8 +229,4 @@ function addUniforms(mPath, mUniformsToAdd) {
 			});
 		}
 	});
-}
-
-function writeShader() {
-
 }
