@@ -35,7 +35,7 @@ findFolder(PATH_SRC, 'shaders', (mPath)=> {
 let watcherViews = watcher([PATH_SRC]);
 
 function startWatch() {
-	// onFileChange('./src/js/views/ViewTest.js');
+	// onFileChange('./src/js/ViewGiant.js');
 
 	watcherViews.on('all',(event, file) => {
 		if(file.indexOf('.DS_Store') > -1) return;
@@ -151,14 +151,21 @@ function getUniforms(mFile, mCb) {
 		return mType;
 	}
 
+	// console.log('Uniforms:', uniforms);
+
 	uniforms = uniforms.map((u) => {
 		let s = replace(u, '"', "");
+		s = s.split("'").join("");
+
+		console.log('Uniform String :', s);
 		s = replace(s, "'");
 		s = s.split('(')[1];
 		s = s.split(')')[0];
 		const ary = s.split(', ');
 		const uniformName = ary[0];
 		const uniformType = getUniformType(ary[1]);
+
+		console.log('Uniform Type :', uniformType, ary[1]);
 
 		return {
 			uniformName,
