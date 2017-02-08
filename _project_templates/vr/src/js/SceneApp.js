@@ -79,6 +79,17 @@ class SceneApp extends Scene {
 			this.renderScene();
 
 			VIVEUtils.submitFrame();
+
+			//	re-render whole
+			scissor(0, 0, GL.width, GL.height);
+
+			GL.clear(0, 0, 0, 0);
+			mat4.copy(this.cameraVR.projection, this.camera.projection);
+
+			GL.setMatrices(this.cameraVR);
+			GL.rotate(this._modelMatrix);
+			this.renderScene();
+
 		} else {
 			GL.setMatrices(this.camera);
 			GL.rotate(this._modelMatrix);
