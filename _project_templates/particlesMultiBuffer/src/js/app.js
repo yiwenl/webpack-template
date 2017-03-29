@@ -66,7 +66,7 @@ function _init3D() {
 	document.body.appendChild(canvas);
 
 	//	INIT 3D TOOL
-	GL.init(canvas);
+	GL.init(canvas, {ignoreWebgl2:true});
 
 	//	INIT ASSETS
 	Assets.init();
