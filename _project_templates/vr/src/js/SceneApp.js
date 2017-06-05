@@ -3,7 +3,7 @@
 import alfrid, { Scene, GL } from 'alfrid';
 import ViewObjModel from './ViewObjModel';
 import Assets from './Assets';
-import VIVEUtils from './utils/VIVEUtils';
+import VRUtils from './utils/VRUtils';
 
 const scissor = function(x, y, w, h) {
 	GL.scissor(x, y, w, h);
@@ -24,10 +24,10 @@ class SceneApp extends Scene {
 
 		//	MODEL MATRIX
 		this._modelMatrix = mat4.create();
-		console.log('Has VR :', VIVEUtils.hasVR);
+		console.log('Has VR :', VRUtils.hasVR);
 
-		if(VIVEUtils.hasVR) {
-			mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, 0, -2));
+		if(VRUtils.canPresent) {
+			mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, 0, -3));
 			GL.enable(GL.SCISSOR_TEST);
 			this.toRender();
 
@@ -53,32 +53,32 @@ class SceneApp extends Scene {
 
 
 	render() {
-		if(!VIVEUtils.hasVR) { this.toRender(); }
+		if(!VRUtils.canPresent) { this.toRender(); }
 	}
 
 
 	toRender() {
-		if(VIVEUtils.hasVR) {	VIVEUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());	}		
+		if(VRUtils.canPresent) {	VRUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());	}		
 
+		VRUtils.getFrameData();
 
-		if(VIVEUtils.hasVR) {
-			VIVEUtils.getFrameData();
+		if(VRUtils.isPresenting) {
+			
 			const w2 = GL.width/2;
-			VIVEUtils.setCamera(this.cameraVR, 'left');
-
+			VRUtils.setCamera(this.cameraVR, 'left');
 			scissor(0, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVR);
 			GL.rotate(this._modelMatrix);
 			this.renderScene();
 
 
-			VIVEUtils.setCamera(this.cameraVR, 'right');
+			VRUtils.setCamera(this.cameraVR, 'right');
 			scissor(w2, 0, w2, GL.height);
 			GL.setMatrices(this.cameraVR);
 			GL.rotate(this._modelMatrix);
 			this.renderScene();
 
-			VIVEUtils.submitFrame();
+			VRUtils.submitFrame();
 
 			//	re-render whole
 			scissor(0, 0, GL.width, GL.height);
@@ -91,9 +91,21 @@ class SceneApp extends Scene {
 			this.renderScene();
 
 		} else {
-			GL.setMatrices(this.camera);
-			GL.rotate(this._modelMatrix);
-			this.renderScene();
+
+			if(VRUtils.canPresent) {
+				VRUtils.setCamera(this.cameraVR, 'left');
+				mat4.copy(this.cameraVR.projection, this.camera.projection);
+
+				scissor(0, 0, GL.width, GL.height);
+				GL.setMatrices(this.cameraVR);
+				GL.rotate(this._modelMatrix);
+				this.renderScene();
+			} else {
+				GL.setMatrices(this.camera);
+				GL.rotate(this._modelMatrix);
+				this.renderScene();	
+			}
+			
 		}
 	}
 
@@ -103,14 +115,14 @@ class SceneApp extends Scene {
 		this._bSky.draw(Assets.get('irr'));
 
 		this._bAxis.draw();
-		this._bDots.draw();
 
 		this._vModel.render(Assets.get('studio_radiance'), Assets.get('irr'), Assets.get('aomap'));
 	}
 
 
 	resize() {
-		const scale = VIVEUtils.hasVR ? 2 : 1;
+		let scale = VRUtils.canPresent ? 2 : 1;
+		if(GL.isMobile) scale = 1;
 		GL.setSize(window.innerWidth * scale, window.innerHeight * scale);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}

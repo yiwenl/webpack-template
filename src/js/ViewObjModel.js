@@ -5,7 +5,6 @@ import Assets from './Assets';
 
 import vs from '../shaders/pbr.vert';
 import fs from '../shaders/pbr.frag';
-import fs1 from '../shaders/pbr3.vert';
 
 class ViewObjModel extends alfrid.View {
 	

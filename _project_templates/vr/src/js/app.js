@@ -6,7 +6,7 @@ import dat from 'dat-gui';
 import Stats from 'stats.js';
 import assets from './asset-list';
 import Assets from './Assets';
-import VIVEUtils from './utils/VIVEUtils';
+import VRUtils from './utils/VRUtils';
 
 if(document.body) {
 	_init();
@@ -64,15 +64,15 @@ function _onImageLoaded(o) {
 
 
 function _initVR() {
-	VIVEUtils.init( (vrDisplay) => _onVR(vrDisplay));
+	VRUtils.init( (vrDisplay) => _onVR(vrDisplay));
 }
 
 function _onVR(vrDisplay) {
-	if(vrDisplay != null) {
+	if(vrDisplay != null && VRUtils.canPresent) {
 		document.body.classList.add('hasVR');
 		let btnVR = document.body.querySelector('#enterVr');
 		btnVR.addEventListener('click', ()=> {
-			VIVEUtils.present(GL.canvas, ()=> {
+			VRUtils.present(GL.canvas, ()=> {
 				document.body.classList.add('present-vr')
 				scene.resize();
 			});
@@ -99,7 +99,7 @@ function _init3D() {
 	Assets.init();
 
 	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
+	// window.gui = new dat.GUI({ width:300 });
 
 	//	CREATE SCENE
 	scene = new SceneApp();

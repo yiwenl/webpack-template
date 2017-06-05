@@ -1,17 +1,15 @@
-// VIVEUtils.js
+// VRUtils.js
 
 let count = 0;
 
-class VIVEUtils {
+class VRUtils {
 	constructor() {
 		this._vrDisplay;
 		this._frameData;
 		this.id = 'ID' + count ++;
 		this._gamePads = [];
 		this.hasVR = false;
-		this.vrPresenting = false;
-
-		// console.log(this.id);
+		this.isPresenting = false;
 	}
 
 
@@ -29,17 +27,6 @@ class VIVEUtils {
 				this._frameData = new VRFrameData();
 
 				this.hasVR = true;
-
-				// console.log('VR display : ', vrDisplay, vrDisplay.capabilities.canPresent);
-				if (vrDisplay.capabilities.canPresent) {
-					// let btnVR = document.body.querySelector('.button_vr');
-					// btnVR.style.display = 'block';
-					// btnVR.addEventListener('click', onVRRequestPresent);
-
-					// window.addEventListener('vrdisplaypresentchange', onVRPresentChange, false);
-					// window.addEventListener('vrdisplayactivate', onVRRequestPresent, false);
-					// window.addEventListener('vrdisplaydeactivate', onVRExitPresent, false);
-				}
 
 				mCallback(vrDisplay);
 			} else {
@@ -62,7 +49,7 @@ class VIVEUtils {
 
 		this._vrDisplay.requestPresent([{ source: mCanvas }]).then( () => {
 			console.log(' on request VR ', window.innerWidth, window.innerHeight);
-			this.vrPresenting = true;
+			this.isPresenting = true;
 
 			if(callback) {
 				callback();
@@ -81,7 +68,6 @@ class VIVEUtils {
 
 	getFrameData() {
 		if(!this._vrDisplay) {
-			// console.log('No VR Headset detected');
 			return;
 		}
 
@@ -101,6 +87,9 @@ class VIVEUtils {
 	}
 
 	_checkGamepads() {
+		if(!navigator.getGamepads) {
+			return;
+		}
 		const gamepads = navigator.getGamepads();
 		let count = 0;
 
@@ -134,12 +123,18 @@ class VIVEUtils {
 		return this._vrDisplay;
 	}
 
+	get canPresent() {
+		if(!this._vrDisplay) {
+			return false;
+		}
+		return this._vrDisplay.capabilities.canPresent;
+	}
 }
 
 let instance;
 
 if(instance === undefined) {
-	instance = new VIVEUtils();
+	instance = new VRUtils();
 }
 
 export default instance;
