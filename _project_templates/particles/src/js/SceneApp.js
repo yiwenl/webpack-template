@@ -28,7 +28,8 @@ class SceneApp extends alfrid.Scene {
 		const numParticles = params.numParticles;
 		const o = {
 			minFilter:GL.NEAREST,
-			magFilter:GL.NEAREST
+			magFilter:GL.NEAREST,
+			type:GL.FLOAT
 		};
 
 		this._fboCurrentPos = new alfrid.FrameBuffer(numParticles, numParticles, o);
