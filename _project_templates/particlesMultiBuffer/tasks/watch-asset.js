@@ -2,7 +2,7 @@
 
 'use strict';
 
-const fs           = require('fs');
+const fs           = require('fs-extra');
 const watcher      = require('./watch');
 const getExtension = require('./getExtension');
 const getFileName = require('./getFileName');
@@ -33,8 +33,15 @@ function saveFile(str)  {
 	});
 }
 
+function isDir(mPath) {
+	return fs.lstatSync(mPath).isDirectory()
+}
+
 function getAssetsInDir(mSourceDir, mCallback) {
 	fs.readdir(mSourceDir, (err, files) => {
+
+		const assetPath = mSourceDir.replace('./dist/', '');
+		console.log('Dir path :', mSourceDir, assetPath);
 
 		//	ERROR GETTING FOLDER
 		if(err) {
@@ -42,18 +49,50 @@ function getAssetsInDir(mSourceDir, mCallback) {
 			return;
 		}
 
-		const assets = files.filter((f)=> {
+		let assets = files.filter((f)=> {
 			return f.indexOf('DS_Store') === -1;
 		});
 
-		const assetPath = mSourceDir.replace('./dist/', '');
-		console.log(mSourceDir, assetPath);
-		const assetsPaths = assets.map((f) => {
+		// console.log('Assets in ', mSourceDir, assets);
+
+		for(let i=0; i<assets.length; i++) {
+			let a = assets[i];
+			// console.log('is dir ? ', a, fs.lstatSync(`${mSourceDir}/${a}`).isDirectory());
+		}
+
+
+		const folders = assets.filter((a)=> {
+			return isDir(`${mSourceDir}/${a}`);
+		});
+
+		assets = assets.filter((a)=> {
+			return !isDir(`${mSourceDir}/${a}`);
+		});
+		
+		assets = assets.map((f) => {
 			return `${assetPath}/${f}`;
 		});
 
-		//	RETURN ASSETS IN FOLDER
-		mCallback(assetsPaths);
+		console.log('Folders:', assets);
+
+		if(folders.length == 0) {
+			mCallback(assets);
+		} else {
+			let count = 0;
+			const onAssets = (a) => {
+				assets = assets.concat(a);
+				count ++;
+				if(count === folders.length) {
+					mCallback(assets);	
+				}
+			}	
+
+			for(let i=0; i<folders.length; i++) {
+				let a = folders[i];
+				getAssetsInDir(`${mSourceDir}/${a}`, onAssets);
+			}
+		}
+		
 	});
 }
 
@@ -121,6 +160,9 @@ function generateAssetList() {
 	});
 }
 
+
+// getAssets();
+
 function loop() {
 	if(needUpdate) {
 		console.log('Update Assets');
@@ -129,11 +171,28 @@ function loop() {
 	}
 }
 
-setInterval(loop, 500);
-const watcherAssets = watcher([ ASSETS_PATH ]);
 
-watcherAssets.on('all',(event, file) => {
-	console.log('Event:',event);
-	if(file.indexOf('.DS_Store') > -1) return;
-	needUpdate = true;
-});
+
+const dirPaths = ASSETS_PATH.concat();
+dirPaths.reduce((sequence, dirPath)=> {
+	return sequence.then(()=>{
+		console.log('dirPath', dirPath);
+		return fs.ensureDir(dirPath);
+	}).then(()=> {
+		startWatch();
+	}).catch((err)=> {
+		console.log('Error :', err);
+	})
+}, Promise.resolve());
+
+
+const startWatch = () => {
+	setInterval(loop, 500);
+	const watcherAssets = watcher([ ASSETS_PATH ]);
+
+	watcherAssets.on('all',(event, file) => {
+		console.log('Event:',event);
+		if(file.indexOf('.DS_Store') > -1) return;
+		needUpdate = true;
+	});
+}
