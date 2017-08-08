@@ -30,7 +30,7 @@ if(isProd) {
 
 const config = {
 	entry: {
-		app:'./src/js/index.js'
+		app:'./src/js/app.js'
 	},
 	devtool: 'inline-source-map',
 	devServer: {
