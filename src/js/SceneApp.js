@@ -5,10 +5,6 @@ import ViewSave from './ViewSave';
 import ViewRender from './ViewRender';
 import ViewSim from './ViewSim';
 
-window.getAsset = function (id) {
-	return assets.find((a) => a.id === id).file;
-};
-
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
