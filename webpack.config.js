@@ -12,8 +12,10 @@ const config = {
 	},
 	devtool: 'inline-source-map',
 	devServer: {
+		host:'0.0.0.0',
 		contentBase: './dist',
-		hot:true
+		hot:true,
+		disableHostCheck:true
 	},
 	plugins: [
 		new webpack.HotModuleReplacementPlugin()
