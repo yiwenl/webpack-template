@@ -1,6 +1,7 @@
 // webpack.config.js
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const pathOutput = path.resolve(__dirname, 'dist');
 const pathNodeModules = path.resolve(__dirname, 'node_modules');
@@ -12,6 +13,8 @@ console.log('Environment isProd :', isProd);
 const plugins = [
 	new webpack.HotModuleReplacementPlugin()
 ];
+
+
 
 if(isProd) {
 	const pluginUglify = new webpack.optimize.UglifyJsPlugin({
@@ -25,10 +28,9 @@ if(isProd) {
 		
 	});
 	plugins.push(pluginUglify);
+	plugins.push(new ExtractTextPlugin('css/main.css'));
 }
 
-
-console.log('Plugins :', plugins);
 
 const config = {
 	entry: {
@@ -55,7 +57,13 @@ const config = {
 			},
 			{
 				test: /\.scss$/,
-				use: ["style-loader", "css-loader", "sass-loader"],
+				use: isProd ?
+				ExtractTextPlugin.extract({
+					fallback:"style-loader",
+					use: ["css-loader", "sass-loader"]
+				}) : 
+				["style-loader", "css-loader", "sass-loader"]
+				,
 				exclude: pathNodeModules
 			},
 			{
