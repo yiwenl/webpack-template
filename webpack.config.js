@@ -4,7 +4,31 @@ const webpack = require('webpack');
 
 const pathOutput = path.resolve(__dirname, 'dist');
 const pathNodeModules = path.resolve(__dirname, 'node_modules');
+const env = process.env.NODE_ENV;
+const isProd = env === 'production';
 
+console.log('Environment isProd :', isProd);
+
+const plugins = [
+	new webpack.HotModuleReplacementPlugin()
+];
+
+if(isProd) {
+	const pluginUglify = new webpack.optimize.UglifyJsPlugin({
+		sourceMap:true,
+		compress: {
+			drop_debugger: true,
+			drop_console: true,
+			screw_ie8: true
+		},
+		comments:false
+		
+	});
+	plugins.push(pluginUglify);
+}
+
+
+console.log('Plugins :', plugins);
 
 const config = {
 	entry: {
@@ -17,9 +41,7 @@ const config = {
 		hot:true,
 		disableHostCheck:true
 	},
-	plugins: [
-		new webpack.HotModuleReplacementPlugin()
-	],
+	plugins,
 	output: {
 		filename:'bundle.js',
 		path: pathOutput
