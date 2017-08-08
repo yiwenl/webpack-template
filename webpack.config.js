@@ -55,7 +55,12 @@ const config = {
 			},
 			{
 				test: /\.scss$/,
-				use: ["style-loader", "css-loader", "sass-loader" ],
+				use: ["style-loader", "css-loader", "sass-loader"],
+				exclude: pathNodeModules
+			},
+			{
+				test: /\.(glsl|vert|frag)$/,
+				use: ["raw-loader", "glslify-loader"],
 				exclude: pathNodeModules
 			}
 		]
