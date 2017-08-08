@@ -7,18 +7,17 @@ import Stats from 'stats.js';
 import assets from './asset-list';
 import Assets from './Assets';
 
-window.params = {
-	numParticles:256 * 2,
-	skipCount:10,
-	maxRadius: 2.5
-};
-
 if(document.body) {
 	_init();
 } else {
-	window.addEventListener('DOMContentLoaded', _init);	
+	window.addEventListener('DOMContentLoaded', _init);
 }
 
+
+window.params = {
+	gamma:2.2,
+	exposure:5
+};
 
 function _init() {
 
@@ -27,16 +26,19 @@ function _init() {
 		document.body.classList.add('isLoading');
 
 		const loader = new AssetsLoader({
-			assets
-		}).on('error', (error) => {
-			console.error(error);
-		}).on('progress', (p) => {
+			assets:assets
+		})
+		.on('error', (error)=>{
+			console.log('Error :', error);
+		})
+		.on('progress', (p) => {
 			// console.log('Progress : ', p);
 			const loader = document.body.querySelector('.Loading-Bar');
-			if(loader) loader.style.width = `${(p * 100).toFixed(2)}%`;
+			if(loader) loader.style.width = `${(p * 100)}%`;
 		})
-			.on('complete', _onImageLoaded)
-			.start();	
+		.on('complete', _onImageLoaded)
+		.start();
+
 	} else {
 		_init3D();
 	}
@@ -60,21 +62,19 @@ function _onImageLoaded(o) {
 
 
 function _init3D() {
-	
 	//	CREATE CANVAS
 	const canvas = document.createElement('canvas');
 	canvas.className = 'Main-Canvas';
 	document.body.appendChild(canvas);
 
 	//	INIT 3D TOOL
-	GL.init(canvas, { ignoreWebgl2:true });
+	GL.init(canvas, {ignoreWebgl2:true});
 
 	//	INIT ASSETS
 	Assets.init();
 
 	//	INIT DAT-GUI
 	window.gui = new dat.GUI({ width:300 });
-	gui.add(params, 'maxRadius', 0.0, 10.0);
 
 	//	CREATE SCENE
 	const scene = new SceneApp();
@@ -83,5 +83,4 @@ function _init3D() {
 	const stats = new Stats();
 	document.body.appendChild(stats.domElement);
 	alfrid.Scheduler.addEF(()=>stats.update());
-
 }

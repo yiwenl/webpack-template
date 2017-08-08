@@ -22,9 +22,10 @@ if(isProd) {
 			drop_console: true,
 			screw_ie8: true
 		},
-		comments:false
+		comments:false,
+		mangle:false
 	}));
-	plugins.push(new ExtractTextPlugin('css/main.css'));
+	plugins.push(new ExtractTextPlugin('assets/css/main.css'));
 }
 
 
@@ -41,14 +42,17 @@ const config = {
 	},
 	plugins,
 	output: {
-		filename:'bundle.js',
+		filename:'assets/js/bundle.js',
 		path: pathOutput
 	},
 	module: {
 		rules: [
 			{
 				test: /\.js$/,
-				use: ['babel-loader', 'eslint-loader'],
+				loader: 'babel-loader',
+				query: {
+					presets: ['es2015']
+				},
 				exclude: pathNodeModules
 			},
 			{

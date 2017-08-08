@@ -6,67 +6,69 @@ import alfrid, { GLTexture, GLCubeTexture, Mesh, ObjLoader } from 'alfrid';
 const Assets = {};
 let _assets = [];
 
-const getAsset = (id) => assets.find((a) => a.id === id).file;
+const getAsset = function(id) {
+	return assets.find( (a) => a.id === id).file;
+}
 
-const getExtension = (mFile) => {
+const getExtension = function(mFile) {
 	const ary = mFile.split('.');
 	return ary[ary.length - 1];
-};
+}
 
-Assets.init = function init() {
-	const hdrCubemaps = {};
+Assets.init = function() {
+	let hdrCubemaps = {};
 	_assets = assetsToLoad.map((o)=> {
 		const ext = getExtension(o.url);
 		const file = getAsset(o.id);
 		let texture;
 
 		switch(ext) {
-		case 'jpg':
-		case 'png':
-			texture = new GLTexture(file);
-			return {
-				id:o.id,
-				file:texture
-			};
-			break;
+			case 'jpg':
+			case 'png':
+				texture = new GLTexture(file);
+				return {
+					id:o.id,
+					file:texture
+				};
+				break;
 
-		case 'hdr':
-			const cubemapName = o.id.split('_')[0];
-			texture = alfrid.HDRLoader.parse(file);
+			case 'hdr':
+				let cubemapName = o.id.split('_')[0];
+				texture = alfrid.HDRLoader.parse(file);
 
-			const oAsset = {
-				id:o.id,
-				file:texture
-			};
+				const oAsset = {
+					id:o.id,
+					file:texture
+				};
 
-			if(!hdrCubemaps[cubemapName]) {
-				hdrCubemaps[cubemapName] = [];
-			}
+				if(!hdrCubemaps[cubemapName]) {
+					hdrCubemaps[cubemapName] = [];
+				}
 
-			hdrCubemaps[cubemapName].push(oAsset);
-			return oAsset;
+				hdrCubemaps[cubemapName].push(oAsset);
+				return oAsset;
 
-			break;
-		case 'dds':
-			texture = GLCubeTexture.parseDDS(file);
-			return {
-				id:o.id,
-				file:texture
-			};
-			break;
+				break;
+			case 'dds':
+				texture = GLCubeTexture.parseDDS(file);
+				return {
+					id:o.id,
+					file:texture
+				};
+				break;
 
-		case 'obj':
-			const mesh = ObjLoader.parse(file);
-			return {
-				id:o.id,
-				file:mesh
-			};
-			break;
+			case 'obj':
+				const mesh = ObjLoader.parse(file);
+				return {
+					id:o.id,
+					file:mesh
+				}
+				break;
 		}
 
 	});
 
-	for(const s in hdrCubemaps) {
+	for(let s in hdrCubemaps) {
 		if(hdrCubemaps[s].length == 6) {
 			console.log('Generate Cubemap :', s);
 
@@ -83,7 +85,7 @@ Assets.init = function init() {
 			_assets.push({
 				id:s,
 				file:texture
-			});
+			})
 		}
 	}
 
@@ -92,8 +94,12 @@ Assets.init = function init() {
 		console.table(_assets);	
 	}
 	
-};
+}
 
-Assets.get = (mId) => _assets.find((a) => a.id === mId).file;
+Assets.get = function(mId) {
+	return _assets.find((a) => {
+		return a.id === mId;
+	}).file;
+}
 
 export default Assets;
