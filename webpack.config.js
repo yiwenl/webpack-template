@@ -14,10 +14,8 @@ const plugins = [
 	new webpack.HotModuleReplacementPlugin()
 ];
 
-
-
 if(isProd) {
-	const pluginUglify = new webpack.optimize.UglifyJsPlugin({
+	plugins.push(new webpack.optimize.UglifyJsPlugin({
 		sourceMap:true,
 		compress: {
 			drop_debugger: true,
@@ -25,9 +23,7 @@ if(isProd) {
 			screw_ie8: true
 		},
 		comments:false
-		
-	});
-	plugins.push(pluginUglify);
+	}));
 	plugins.push(new ExtractTextPlugin('css/main.css'));
 }
 
@@ -52,12 +48,7 @@ const config = {
 		rules: [
 			{
 				test: /\.js$/,
-				use: {
-					loader:'babel-loader',
-					options: {
-						presets: ['env']
-					}
-				},
+				use: ['babel-loader', 'eslint-loader'],
 				exclude: pathNodeModules
 			},
 			{
