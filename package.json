@@ -1,0 +1,27 @@
+{
+  "name": "webpack-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yiwenl/webpack-template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yiwenl/webpack-template/issues"
+  },
+  "homepage": "https://github.com/yiwenl/webpack-template#readme",
+  "devDependencies": {
+    "webpack": "^3.5.1",
+    "webpack-dev-server": "^2.7.0"
+  }
+}
