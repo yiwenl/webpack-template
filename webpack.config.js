@@ -52,10 +52,14 @@ const config = {
 				test: /\.css$/,
 				use: ['style-loader', 'css-loader'],
 				exclude: pathNodeModules
+			},
+			{
+				test: /\.scss$/,
+				use: ["style-loader", "css-loader", "sass-loader" ],
+				exclude: pathNodeModules
 			}
 		]
 	}
 }
-
 
 module.exports = config;

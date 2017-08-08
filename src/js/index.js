@@ -1,4 +1,5 @@
-// index.js
+// import './global.scss';
+import '../scss/global.scss';
 
 // import Test from './Test';
 
