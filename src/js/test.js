@@ -1,6 +1,6 @@
 // test.js
 
-class Test() {
+class Test {
 	constructor() {
 		this.value = Math.random();
 	}

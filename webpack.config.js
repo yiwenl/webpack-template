@@ -51,6 +51,16 @@ const config = {
 	module: {
 		rules: [
 			{
+				test: /\.js$/,
+				use: {
+					loader:'babel-loader',
+					options: {
+						presets: ['env']
+					}
+				},
+				exclude: pathNodeModules
+			},
+			{
 				test: /\.css$/,
 				use: ['style-loader', 'css-loader'],
 				exclude: pathNodeModules
