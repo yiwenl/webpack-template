@@ -16,7 +16,7 @@ const plugins = [
 
 if(isProd) {
 	plugins.push(new webpack.optimize.UglifyJsPlugin({
-		sourceMap:true,
+		sourceMap:false,
 		compress: {
 			drop_debugger: true,
 			drop_console: true,
@@ -28,12 +28,23 @@ if(isProd) {
 	plugins.push(new ExtractTextPlugin('assets/css/main.css'));
 }
 
+const entry = isProd ? {app:'./src/js/app.js'}
+				: {app:'./src/js/app.js', debug:'./src/js/debug.js'};
+const output = isProd ? {
+		filename:'assets/js/app.js',
+		path: pathOutput
+	} : {
+		filename:'assets/js/[name].js',
+		path: pathOutput
+	};
+
+const devtool = isProd ? 'source-map' : 'inline-source-map';
+
+
 
 const config = {
-	entry: {
-		app:'./src/js/app.js'
-	},
-	devtool: 'inline-source-map',
+	entry,
+	devtool,
 	devServer: {
 		host:'0.0.0.0',
 		contentBase: './dist',
@@ -41,10 +52,7 @@ const config = {
 		disableHostCheck:true
 	},
 	plugins,
-	output: {
-		filename:'assets/js/bundle.js',
-		path: pathOutput
-	},
+	output,
 	module: {
 		rules: [
 			{
