@@ -1,9 +1,9 @@
 import '../scss/global.scss';
+import debugPolyfill from './debugPolyfill';
 import alfrid, { GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
-import dat from 'dat-gui';
-import Stats from 'stats.js';
+
 import assets from './asset-list';
 import Assets from './Assets';
 
@@ -43,6 +43,14 @@ function _init() {
 		_init3D();
 	}
 
+
+	// console.log('process.env.NODE_ENV', process.args);
+	for(let s in process) {
+		console.log(s);
+	}
+
+	console.log(process.env);
+	console.log(process.argv);
 }
 
 
@@ -73,14 +81,8 @@ function _init3D() {
 	//	INIT ASSETS
 	Assets.init();
 
-	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
-
 	//	CREATE SCENE
 	const scene = new SceneApp();
 
-	//	STATS
-	const stats = new Stats();
-	document.body.appendChild(stats.domElement);
-	alfrid.Scheduler.addEF(()=>stats.update());
+	
 }
