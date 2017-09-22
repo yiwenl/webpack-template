@@ -182,11 +182,7 @@
 
     // specify the maximum length of a line in your program
     // http://eslint.org/docs/rules/max-len
-<<<<<<< HEAD
-    'max-len': [2, 100, 2, {
-=======
     'max-len': [2, 200, 2, {
->>>>>>> feature/webpack2
       ignoreUrls: true,
       ignoreComments: false
     }],
@@ -251,10 +247,6 @@
     'no-restricted-syntax': [
       2,
       'DebuggerStatement',
-<<<<<<< HEAD
-      'ForInStatement',
-=======
->>>>>>> feature/webpack2
       'LabeledStatement',
       'WithStatement',
     ],
