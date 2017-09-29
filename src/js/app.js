@@ -42,15 +42,6 @@ function _init() {
 	} else {
 		_init3D();
 	}
-
-
-	// console.log('process.env.NODE_ENV', process.args);
-	for(let s in process) {
-		console.log(s);
-	}
-
-	console.log(process.env);
-	console.log(process.argv);
 }
 
 
@@ -59,6 +50,7 @@ function _onImageLoaded(o) {
 	console.log('Image Loaded : ', o);
 	window.assets = o;
 	const loader = document.body.querySelector('.Loading-Bar');
+	console.log('Loader :', loader);
 	loader.style.width = '100%';
 
 	_init3D();

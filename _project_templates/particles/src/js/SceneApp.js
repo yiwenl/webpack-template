@@ -123,7 +123,8 @@ class SceneApp extends alfrid.Scene {
 
 
 	resize() {
-		GL.setSize(window.innerWidth, window.innerHeight);
+		const { innerWidth, innerHeight, devicePixelRatio } = window;
+		GL.setSize(innerWidth * devicePixelRatio, innerHeight * devicePixelRatio);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}
 }
