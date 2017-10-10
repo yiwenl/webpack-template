@@ -42,15 +42,6 @@ function _init() {
 	} else {
 		_init3D();
 	}
-
-
-	// console.log('process.env.NODE_ENV', process.args);
-	for(let s in process) {
-		console.log(s);
-	}
-
-	console.log(process.env);
-	console.log(process.argv);
 }
 
 
