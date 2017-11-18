@@ -46,7 +46,7 @@ class SceneApp extends Scene {
 
 	resize() {
 		const { innerWidth, innerHeight, devicePixelRatio } = window;
-		GL.setSize(innerWidth * devicePixelRatio, innerHeight * devicePixelRatio);
+		GL.setSize(innerWidth, innerHeight);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}
 }

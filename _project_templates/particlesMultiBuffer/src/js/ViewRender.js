@@ -1,14 +1,13 @@
 // ViewRender.js
 
-import alfrid from 'alfrid';
-const vsRender = require('../shaders/render.vert');
-const fsRender = require('../shaders/render.frag');
-let GL = alfrid.GL;
+import alfrid, { GL } from 'alfrid';
+import vs from 'shaders/render.vert';
+import fs from 'shaders/render.frag';
 
 class ViewRender extends alfrid.View {
 	
 	constructor() {
-		super(vsRender, fsRender);
+		super(vs, fs);
 		this.time = Math.random() * 0xFFF;
 	}
 

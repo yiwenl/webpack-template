@@ -1,14 +1,13 @@
 // ViewSim.js
 
-import alfrid from 'alfrid';
-const GL = alfrid.GL;
-const fsSim = require('../shaders/sim.frag');
+import alfrid, { GL } from 'alfrid';
+import fs from 'shaders/sim.frag';
 
 
 class ViewSim extends alfrid.View {
 	
 	constructor() {
-		super(alfrid.ShaderLibs.bigTriangleVert, fsSim);
+		super(alfrid.ShaderLibs.bigTriangleVert, fs);
 		this.time = Math.random() * 0xFF;
 	}
 
