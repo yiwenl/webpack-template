@@ -6,11 +6,12 @@ import dat from 'dat-gui';
 import Stats from 'stats.js';
 import assets from './asset-list';
 import Assets from './Assets';
+import debug from './debug';
 
 window.params = {
 	numParticles:256*2,
-	skipCount:10,
-	maxRadius: 2.5
+	skipCount:6,
+	maxRadius: 3.5
 };
 
 if(document.body) {
@@ -71,16 +72,6 @@ function _init3D() {
 	//	INIT ASSETS
 	Assets.init();
 
-	//	INIT DAT-GUI
-	window.gui = new dat.GUI({ width:300 });
-	gui.add(params, 'maxRadius', 0.0, 10.0);
-
 	//	CREATE SCENE
 	const scene = new SceneApp();
-
-	//	STATS
-	const stats = new Stats();
-	document.body.appendChild(stats.domElement);
-	alfrid.Scheduler.addEF(()=>stats.update());
-
 }

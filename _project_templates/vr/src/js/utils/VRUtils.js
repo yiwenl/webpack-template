@@ -1,5 +1,7 @@
 // VRUtils.js
 
+import Gamepad from './Gamepad';
+
 let count = 0;
 
 class VRUtils {
@@ -10,6 +12,9 @@ class VRUtils {
 		this._gamePads = [];
 		this.hasVR = false;
 		this.isPresenting = false;
+
+		this._rightHandpad;
+		this._leftHandpad;
 	}
 
 
@@ -93,24 +98,33 @@ class VRUtils {
 		const gamepads = navigator.getGamepads();
 		let count = 0;
 
-		this._gamePads = [];
+		
 
 		for(let i=0; i<gamepads.length; i++) {
-			const gamepad = gamepads[i]
 
-			if(gamepad && gamepad.pose) {
-				if(!gamepad.pose.position) continue;
+			if(!this._gamePads[i]) {
+				const gamepad = new Gamepad();
+				this._gamePads[i] = gamepad;
+			}
+			const gamepadData = gamepads[i]
+			this._gamePads[i].update(gamepadData);
+
+
+			if(gamepadData && gamepadData.pose) {
+				if(!gamepadData.pose.position) continue;
 
 				const o = {
-					position:gamepad.pose.position,
-					orientation:gamepad.pose.orientation,
-					buttons:gamepad.buttons
+					position:gamepadData.pose.position,
+					orientation:gamepadData.pose.orientation,
+					buttons:gamepadData.buttons,
+					hand:gamepadData.hand
 				}
 
-				this._gamePads.push(o);
+				// this._gamePads.push(o);
 				count ++;
 			}
 		}
+
 	}
 
 
@@ -129,6 +143,37 @@ class VRUtils {
 		}
 		return this._vrDisplay.capabilities.canPresent;
 	}
+
+
+	get leftHand() {
+		if(!this._leftHandpad) {
+			const pads = this._gamePads.filter(pad => pad.hand === 'left');
+			if(pads.length == 0) {
+				return null;
+			}
+
+			this._leftHandpad = pads[0];
+		}
+
+		return this._leftHandpad;
+	}
+
+
+	get rightHand() {
+		if(!this._rightHandpad) {
+			const pads = this._gamePads.filter(pad => pad.hand === 'right');
+
+			if(pads.length == 0) {
+				return null;
+			}
+
+			this._rightHandpad = pads[0];
+		}
+
+		return this._rightHandpad;
+	}
+
+
 }
 
 let instance;

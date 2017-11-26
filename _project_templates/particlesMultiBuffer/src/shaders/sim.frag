@@ -114,24 +114,27 @@ vec3 curlNoise( vec3 p ){
 }
 
 void main(void) {
-	vec3 pos        = texture2D(texturePos, vTextureCoord).rgb;
-	vec3 vel        = texture2D(textureVel, vTextureCoord).rgb;
-	vec3 extra      = texture2D(textureExtra, vTextureCoord).rgb;
-	float posOffset = (0.5 + extra.r * 0.2) * .25;
-	vec3 acc        = curlNoise(pos * posOffset + time * .3);
+	vec3 pos             = texture2D(texturePos, vTextureCoord).rgb;
+	vec3 vel             = texture2D(textureVel, vTextureCoord).rgb;
+	vec3 extra           = texture2D(textureExtra, vTextureCoord).rgb;
+	float posOffset      = mix(extra.r, 1.0, .75) * .1;
+	vec3 acc             = curlNoise(pos * posOffset + time * .5);
+	float speedOffset    = mix(extra.g, 1.0, .5);
 	
-	vel += acc * .02;
-
-	float dist = length(pos);
+	float dist           = length(pos);
 	if(dist > maxRadius) {
-		float f = (dist - maxRadius) * .005;
-		vel -= normalize(pos) * f;
+		float f          = pow(2.0, (dist - maxRadius) * 2.0) * 0.2;
+		acc              -= normalize(pos) * f;
 	}
+	
+	vel                  += acc * .02 * speedOffset;
+	
+	const float decrease = .96;
+	vel                  *= decrease;
+	
+	pos                  += vel;
 
-	const float decrease = .93;
-	vel *= decrease;
-
-	gl_FragData[0] = vec4(pos + vel, 1.0);
+	gl_FragData[0] = vec4(pos, 1.0);
 	gl_FragData[1] = vec4(vel, 1.0);
 	gl_FragData[2] = vec4(extra, 1.0);
 	gl_FragData[3] = vec4(0.0, 0.0, 0.0, 1.0);
