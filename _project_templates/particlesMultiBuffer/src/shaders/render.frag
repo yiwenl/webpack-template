@@ -3,9 +3,11 @@ precision highp float;
 varying vec4 vColor;
 varying vec4 vShadowCoord;
 uniform sampler2D textureDepth;
+uniform sampler2D textureParticle;
 
 #define uMapSize vec2(1024.0)
 #define FOG_DENSITY 0.2
+#define LIGHT_POS vec3(0.0, 10.0, 0.0)
 
 
 float rand(vec4 seed4) {
@@ -41,14 +43,34 @@ float fogFactorExp2(const float dist, const float density) {
 	return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);
 }
 
+
+float diffuse(vec3 N, vec3 L) {
+	return max(dot(N, normalize(L)), 0.0);
+}
+
+
+vec3 diffuse(vec3 N, vec3 L, vec3 C) {
+	return diffuse(N, L) * C;
+}
+
 void main(void) {
-	if(distance(gl_PointCoord, vec2(.5)) > .5) discard;
+	// if(distance(gl_PointCoord, vec2(.5)) > .5) discard;
+	vec2 uv = gl_PointCoord;
+	uv.y = 1.0 - uv.y;
+	vec4 colorMap = texture2D(textureParticle, uv);
+	if(colorMap.r <= 0.0) {
+		discard;
+	}
+	vec3 N = colorMap.rgb;
 
 	vec4 shadowCoord = vShadowCoord / vShadowCoord.w;
 	float s = PCFShadow(textureDepth, uMapSize, shadowCoord);
 	s = mix(s, 1.0, .25);
 
-	vec4 color = vColor;
+	float d = diffuse(N, LIGHT_POS);
+	// d = mix(d, 1.0, .25);
+
+	vec4 color = vec4(vec3(d), 1.0);
 	color.rgb *= s;
 
 	float fogDistance = gl_FragCoord.z / gl_FragCoord.w;

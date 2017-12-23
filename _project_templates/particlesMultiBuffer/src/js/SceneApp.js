@@ -6,6 +6,7 @@ import ViewRender from './ViewRender';
 import ViewRenderShadow from './ViewRenderShadow';
 import ViewSim from './ViewSim';
 import ViewFloor from './ViewFloor';
+import fs from 'shaders/normal.frag';
 
 window.getAsset = function(id) {
 	return assets.find( (a) => a.id === id).file;
@@ -36,6 +37,22 @@ class SceneApp extends alfrid.Scene {
 		this._shadowMatrix = mat4.create();
 		mat4.multiply(this._shadowMatrix, this._cameraLight.projection, this._cameraLight.viewMatrix);
 		mat4.multiply(this._shadowMatrix, this._biasMatrix, this._shadowMatrix);
+
+		//	get particle normal map
+		const size = 1;
+		this.cameraOrtho.ortho(-size, size, -size, size);
+		this.cameraOrtho.lookAt([0, 0, 3], [0, 0, 0]);
+		const mesh = alfrid.Geom.sphere(1, 12);
+		const shader = new alfrid.GLShader(null, fs);
+		this._fboParticle.bind();
+		// GL.clear(1, 0, 0, 1);
+		GL.clear(0, 0, 0, 0);
+		GL.setMatrices(this.cameraOrtho);
+		shader.bind();
+		GL.draw(mesh);
+		this._fboParticle.unbind();
+
+
 	}
 
 	_initTextures() {
@@ -53,6 +70,8 @@ class SceneApp extends alfrid.Scene {
 		this._fboTarget  	= new alfrid.FrameBuffer(numParticles, numParticles, o, 3);
 
 		this._fboShadow = new alfrid.FrameBuffer(1024, 1024, {minFilter:GL.LINEAR, magFilter:GL.LINEAR});
+		const s = 32 * 2;
+		this._fboParticle = new alfrid.FrameBuffer(s, s, {minFilter:GL.LINEAR, magFilter:GL.LINEAR});
 	}
 
 
@@ -111,7 +130,8 @@ class SceneApp extends alfrid.Scene {
 			p, 
 			this._fboCurrent.getTexture(2),
 			this._shadowMatrix, 
-			this._fboShadow.getDepthTexture()
+			this._fboShadow.getDepthTexture(),
+			this.textureParticle
 		);
 	}
 
@@ -148,8 +168,9 @@ class SceneApp extends alfrid.Scene {
 		this._renderParticles();
 		this._vFloor.render(this._shadowMatrix, this._fboShadow.getDepthTexture());
 
-		// const s = 300;
-		// GL.viewport(0, 0, s, s);
+		const s = 32;
+		GL.viewport(0, 0, s, s);
+		this._bCopy.draw(this._fboParticle.getTexture());
 		// this._bCopy.draw(this._fboShadow.getDepthTexture());
 
 		// GL.viewport(s, 0, s, s);
@@ -161,6 +182,11 @@ class SceneApp extends alfrid.Scene {
 		const { innerWidth, innerHeight, devicePixelRatio } = window;
 		GL.setSize(innerWidth, innerHeight);
 		this.camera.setAspectRatio(GL.aspectRatio);
+	}
+
+
+	get textureParticle() {
+		return this._fboParticle.getTexture();
 	}
 }
 
