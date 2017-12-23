@@ -29,7 +29,7 @@ class SceneApp extends alfrid.Scene {
 		const o = {
 			minFilter:GL.NEAREST,
 			magFilter:GL.NEAREST,
-			type:GL.FLOAT
+			type:GL.HALF_FLOAT
 		};
 
 		this._fboCurrentPos = new alfrid.FrameBuffer(numParticles, numParticles, o);

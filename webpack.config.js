@@ -73,9 +73,9 @@ const config = {
 				use: isProd ?
 				ExtractTextPlugin.extract({
 					fallback:"style-loader",
-					use: ["css-loader", "sass-loader"]
+					use: ["css-loader?url=false", "sass-loader"]
 				}) : 
-				["style-loader", "css-loader", "sass-loader"]
+				["style-loader", "css-loader?url=false", "sass-loader"]
 				,
 				exclude: pathNodeModules
 			},

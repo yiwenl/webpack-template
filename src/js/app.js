@@ -56,7 +56,7 @@ function _onImageLoaded(o) {
 	_init3D();
 
 	setTimeout(()=> {
-		document.body.classList.remove('isLoading');
+		// document.body.classList.remove('isLoading');
 	}, 250);
 }
 

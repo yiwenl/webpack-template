@@ -3,6 +3,7 @@
 import alfrid, { Scene, GL } from 'alfrid';
 import ViewSave from './ViewSave';
 import ViewRender from './ViewRender';
+import ViewRenderShadow from './ViewRenderShadow';
 import ViewSim from './ViewSim';
 import ViewFloor from './ViewFloor';
 
@@ -68,6 +69,7 @@ class SceneApp extends alfrid.Scene {
 
 		//	views
 		this._vRender = new ViewRender();
+		this._vRenderShadow = new ViewRenderShadow();
 		this._vSim 	  = new ViewSim();
 
 		this._vSave = new ViewSave();
@@ -117,7 +119,13 @@ class SceneApp extends alfrid.Scene {
 		this._fboShadow.bind();
 		GL.clear(0, 0, 0, 0);
 		GL.setMatrices(this._cameraLight);
-		this._renderParticles();
+		let p = this._count / params.skipCount;
+		this._vRenderShadow.render(
+			this._fboTarget.getTexture(0), 
+			this._fboCurrent.getTexture(0), 
+			p, 
+			this._fboCurrent.getTexture(2)
+		);
 		this._fboShadow.unbind();
 	}
 
@@ -139,12 +147,19 @@ class SceneApp extends alfrid.Scene {
 
 		this._renderParticles();
 		this._vFloor.render(this._shadowMatrix, this._fboShadow.getDepthTexture());
+
+		// const s = 300;
+		// GL.viewport(0, 0, s, s);
+		// this._bCopy.draw(this._fboShadow.getDepthTexture());
+
+		// GL.viewport(s, 0, s, s);
+		// this._bCopy.draw(this._fboShadow.getTexture());
 	}
 
 
 	resize() {
 		const { innerWidth, innerHeight, devicePixelRatio } = window;
-		GL.setSize(innerWidth * devicePixelRatio, innerHeight * devicePixelRatio);
+		GL.setSize(innerWidth, innerHeight);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}
 }
