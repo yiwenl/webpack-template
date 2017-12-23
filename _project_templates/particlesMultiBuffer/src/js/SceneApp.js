@@ -49,8 +49,8 @@ class SceneApp extends alfrid.Scene {
 			type:GL.FLOAT
 		};
 
-		this._fboCurrent  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
-		this._fboTarget  	= new alfrid.FrameBuffer(numParticles, numParticles, o, true);
+		this._fboCurrent  	= new alfrid.FrameBuffer(numParticles, numParticles, o, 3);
+		this._fboTarget  	= new alfrid.FrameBuffer(numParticles, numParticles, o, 3);
 
 		this._fboShadow = new alfrid.FrameBuffer(1024, 1024, {minFilter:GL.LINEAR, magFilter:GL.LINEAR});
 	}
