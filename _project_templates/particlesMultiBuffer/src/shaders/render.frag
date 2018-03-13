@@ -61,7 +61,7 @@ void main(void) {
 	if(colorMap.r <= 0.0) {
 		discard;
 	}
-	vec3 N = colorMap.rgb;
+	vec3 N = colorMap.rgb * 2.0 - 1.0;
 
 	vec4 shadowCoord = vShadowCoord / vShadowCoord.w;
 	float s = PCFShadow(textureDepth, uMapSize, shadowCoord);

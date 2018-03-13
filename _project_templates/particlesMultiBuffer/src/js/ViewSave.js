@@ -3,6 +3,7 @@
 import alfrid, { GL } from 'alfrid';
 import vs from 'shaders/save.vert';
 import fs from 'shaders/save.frag';
+import Config from './Config';
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 class ViewSave extends alfrid.View {
@@ -19,7 +20,7 @@ class ViewSave extends alfrid.View {
 		let extras = [];
 		let count = 0;
 
-		let numParticles = params.numParticles;
+		let numParticles = Config.numParticles;
 		let totalParticles = numParticles * numParticles;
 		console.debug('Total Particles : ', totalParticles);
 		let ux, uy;
@@ -27,7 +28,7 @@ class ViewSave extends alfrid.View {
 		const m = mat4.create();
 
 		const getPos = () => {
-			const r = Math.sqrt(Math.random()) * params.maxRadius;
+			const r = Math.sqrt(Math.random()) * Config.maxRadius;
 			const v = vec3.fromValues(r, 0, 0);
 			mat4.identity(m);
 			mat4.rotateX(m, m, Math.random() * Math.PI * 2);

@@ -6,6 +6,8 @@ import Assets from './Assets';
 import vs from '../shaders/pbr.vert';
 import fs from '../shaders/pbr.frag';
 
+import Config from './Config';
+
 class ViewObjModel extends alfrid.View {
 	
 	constructor() {
@@ -42,8 +44,8 @@ class ViewObjModel extends alfrid.View {
 		this.shader.uniform('uMetallic', 'uniform1f', this.metallic);
 		this.shader.uniform('uSpecular', 'uniform1f', this.specular);
 
-		this.shader.uniform('uExposure', 'uniform1f', params.exposure);
-		this.shader.uniform('uGamma', 'uniform1f', params.gamma);
+		this.shader.uniform('uExposure', 'uniform1f', Config.exposure);
+		this.shader.uniform('uGamma', 'uniform1f', Config.gamma);
 
 		GL.draw(this.mesh);
 	}

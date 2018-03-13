@@ -1,5 +1,5 @@
 import '../scss/global.scss';
-import debugPolyfill from './debugPolyfill';
+import debugPolyfill from './debug/debugPolyfill';
 import alfrid, { GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
@@ -13,11 +13,6 @@ if(document.body) {
 	window.addEventListener('DOMContentLoaded', _init);
 }
 
-
-window.params = {
-	gamma:2.2,
-	exposure:5
-};
 
 function _init() {
 

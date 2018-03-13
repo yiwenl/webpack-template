@@ -7,6 +7,8 @@ import ViewRenderShadow from './ViewRenderShadow';
 import ViewSim from './ViewSim';
 import ViewFloor from './ViewFloor';
 import fs from 'shaders/normal.frag';
+import Config from './Config';
+import Settings from './Settings';
 
 window.getAsset = function(id) {
 	return assets.find( (a) => a.id === id).file;
@@ -14,6 +16,8 @@ window.getAsset = function(id) {
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
+		Settings.init();
+
 		super();
 		GL.enableAlphaBlending();
 
@@ -53,13 +57,18 @@ class SceneApp extends alfrid.Scene {
 		this._fboParticle.unbind();
 
 
+		setTimeout(()=> {
+			gui.add(Config, 'numParticles', 10, 1024).step(1).onFinishChange(Settings.reload);	
+		}, 500);
+
+		
 	}
 
 	_initTextures() {
 		console.log('init textures');
 
 		//	FBOS
-		const numParticles = params.numParticles;
+		const numParticles = Config.numParticles;
 		const o = {
 			minFilter:GL.NEAREST,
 			magFilter:GL.NEAREST,
@@ -123,7 +132,7 @@ class SceneApp extends alfrid.Scene {
 	}
 
 	_renderParticles() {
-		let p = this._count / params.skipCount;
+		let p = this._count / Config.skipCount;
 		this._vRender.render(
 			this._fboTarget.getTexture(0), 
 			this._fboCurrent.getTexture(0), 
@@ -139,7 +148,7 @@ class SceneApp extends alfrid.Scene {
 		this._fboShadow.bind();
 		GL.clear(0, 0, 0, 0);
 		GL.setMatrices(this._cameraLight);
-		let p = this._count / params.skipCount;
+		let p = this._count / Config.skipCount;
 		this._vRenderShadow.render(
 			this._fboTarget.getTexture(0), 
 			this._fboCurrent.getTexture(0), 
@@ -153,7 +162,7 @@ class SceneApp extends alfrid.Scene {
 	render() {
 
 		this._count ++;
-		if(this._count % params.skipCount == 0) {
+		if(this._count % Config.skipCount == 0) {
 			this._count = 0;
 			this.updateFbo();
 		}

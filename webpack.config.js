@@ -29,7 +29,7 @@ if(isProd) {
 }
 
 const entry = isProd ? {app:'./src/js/app.js'}
-				: {app:'./src/js/app.js', debug:'./src/js/debug.js'};
+				: {app:'./src/js/app.js', debug:'./src/js/debug/debug.js'};
 const output = isProd ? {
 		filename:'assets/js/app.js',
 		path: pathOutput

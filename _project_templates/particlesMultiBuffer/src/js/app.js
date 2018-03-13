@@ -1,4 +1,6 @@
 import '../scss/global.scss';
+
+import debugPolyfill from './debug/debugPolyfill';
 import alfrid, { GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
@@ -6,13 +8,7 @@ import dat from 'dat-gui';
 import Stats from 'stats.js';
 import assets from './asset-list';
 import Assets from './Assets';
-import debug from './debug';
 
-window.params = {
-	numParticles:256*2,
-	skipCount:6,
-	maxRadius: 3.5
-};
 
 if(document.body) {
 	_init();

@@ -6,6 +6,9 @@ import ViewSave from './ViewSave';
 import ViewRender from './ViewRender';
 import ViewSim from './ViewSim';
 
+import Settings from './Settings';
+import Config from './Config';
+
 window.getAsset = function(id) {
 	return assets.find( (a) => a.id === id).file;
 }
@@ -13,6 +16,7 @@ window.getAsset = function(id) {
 class SceneApp extends alfrid.Scene {
 	constructor() {
 		super();
+		Settings.init();
 		GL.enableAlphaBlending();
 
 		this._count = 0;
@@ -25,7 +29,7 @@ class SceneApp extends alfrid.Scene {
 		console.log('init textures');
 
 		//	FBOS
-		const numParticles = params.numParticles;
+		const numParticles = Config.numParticles;
 		const o = {
 			minFilter:GL.NEAREST,
 			magFilter:GL.NEAREST,
@@ -103,12 +107,12 @@ class SceneApp extends alfrid.Scene {
 	render() {
 
 		this._count ++;
-		if(this._count % params.skipCount == 0) {
+		if(this._count % Config.skipCount == 0) {
 			this._count = 0;
 			this.updateFbo();
 		}
 
-		let p = this._count / params.skipCount;
+		let p = this._count / Config.skipCount;
 
 		GL.clear(0, 0, 0, 0);
 		this._bAxis.draw();
