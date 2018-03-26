@@ -101,7 +101,7 @@ vec3 getNormal() {
 	mat3 tbn = mat3(t, b, ng);
 
 #ifdef HAS_NORMALMAP
-	vec3 n = texture2D(uNormalSampler, vTextureCoord).rgb;
+	vec3 n = texture2D(uNormalMap, vTextureCoord).rgb;
 	n = normalize(tbn * ((2.0 * n - 1.0) * vec3(uNormalScale, uNormalScale, 1.0)));
 #else
 	// The tbn matrix is linearly interpolated, so we need to re-normalize
