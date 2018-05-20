@@ -3,14 +3,34 @@
 import alfrid, { GL } from 'alfrid';
 import vs from 'shaders/render.vert';
 import fs from 'shaders/render.frag';
+import fsShadow from 'shaders/renderShadow.frag';
 
 import Config from './Config';
+const definesToString = function(defines) {
+	let outStr = '';
+	for (const def in defines) {
+		if(defines[def]) {
+			outStr += '#define ' + def + ' ' + defines[def] + '\n';	
+		}
+		
+	}
+	return outStr;
+};
 
 class ViewRender extends alfrid.View {
 	
 	constructor() {
-		super(vs, fs);
+
+		let usePCF = false;
+		const defines = {
+			'USE_PCF': GL.isMobile ? 1 : 1,
+		}
+		const defineStr = definesToString(defines);
+		let _fs = `${defineStr}\n${fs}`;
+
+		super(vs, _fs);
 		this.time = Math.random() * 0xFFF;
+		this.shaderShadow = new alfrid.GLShader(vs, fsShadow);
 	}
 
 
@@ -39,7 +59,28 @@ class ViewRender extends alfrid.View {
 	}
 
 
-	render(textureCurr, textureNext, p, textureExtra) {
+	renderShadow(textureCurr, textureNext, p, textureExtra) {
+		this.time += 0.1;
+		const shader = this.shaderShadow;
+		shader.bind();
+
+		shader.uniform('textureCurr', 'uniform1i', 0);
+		textureCurr.bind(0);
+
+		shader.uniform('textureNext', 'uniform1i', 1);
+		textureNext.bind(1);
+
+		shader.uniform('textureExtra', 'uniform1i', 2);
+		textureExtra.bind(2);
+
+		shader.uniform('uViewport', 'vec2', [GL.width, GL.height]);
+		shader.uniform('percent', 'float', p);
+		shader.uniform('time', 'float', this.time);
+		GL.draw(this.mesh);
+	}
+
+
+	render(textureCurr, textureNext, p, textureExtra, mShadowMatrix, mTextureDepth) {
 		this.time += 0.1;
 		this.shader.bind();
 
@@ -55,6 +96,12 @@ class ViewRender extends alfrid.View {
 		this.shader.uniform('uViewport', 'vec2', [GL.width, GL.height]);
 		this.shader.uniform('percent', 'float', p);
 		this.shader.uniform('time', 'float', this.time);
+
+		if(mShadowMatrix) {
+			this.shader.uniform("uShadowMatrix", "mat4", mShadowMatrix);
+			this.shader.uniform("textureDepth", "uniform1i", 3);
+			mTextureDepth.bind(3);
+		}
 		GL.draw(this.mesh);
 	}
 

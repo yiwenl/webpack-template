@@ -5,6 +5,7 @@ import ViewAddVel from './ViewAddVel';
 import ViewSave from './ViewSave';
 import ViewRender from './ViewRender';
 import ViewSim from './ViewSim';
+import ViewFloor from './ViewFloor';
 
 import Settings from './Settings';
 import Config from './Config';
@@ -20,13 +21,48 @@ class SceneApp extends alfrid.Scene {
 		GL.enableAlphaBlending();
 
 		this._count = 0;
-		this.camera.setPerspective(Math.PI/2, GL.aspectRatio, .1, 100);
-		this.orbitalControl.radius.value = 10;
+		this.camera.setPerspective(Math.PI/3, GL.aspectRatio, .1, 100);
+		this.orbitalControl.radius.value = 18;
 		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.3;
+
+
+		//	shadow mapping
+		this._cameraLight = new alfrid.CameraOrtho();
+		const s = 10;
+		this._cameraLight.ortho(-s, s, -s, s, 1, 30);
+		// this._cameraLight.lookAt(Config.lightPos, [0, 0, 0], [0, 1, 0]);
+		// this._cameraLight.lookAt([0, 10, 0], [0, 0, 0], [0, 0, -1]);
+		this._cameraLight.lookAt([2, 10, 2], [0, 0, 0]);
+
+		this._biasMatrix = mat4.fromValues(
+			0.5, 0.0, 0.0, 0.0,
+			0.0, 0.5, 0.0, 0.0,
+			0.0, 0.0, 0.5, 0.0,
+			0.5, 0.5, 0.5, 1.0
+		);
+		this._shadowMatrix = mat4.create();
+		mat4.multiply(this._shadowMatrix, this._cameraLight.projection, this._cameraLight.viewMatrix);
+		mat4.multiply(this._shadowMatrix, this._biasMatrix, this._shadowMatrix);
+
+
+		// console.log(alfrid.WebglNumber);
+
 	}
 
 	_initTextures() {
 		console.log('init textures');
+
+		const type = GL.FLOAT || GL.HALF_FLOAT;
+
+		console.log('Type : ', alfrid.WebglNumber[type]);
+		console.log('Type : ', alfrid.WebglNumber[type]);
+		console.log('Type : ', alfrid.WebglNumber[type]);
+		this.type = alfrid.WebglNumber[type];
+
+		setTimeout(()=> {
+			// console.log(gui.addText);
+			gui.add(this,'type');
+		}, 500);
 
 		//	FBOS
 		const numParticles = Config.numParticles;
@@ -41,6 +77,10 @@ class SceneApp extends alfrid.Scene {
 		this._fboCurrentVel = new alfrid.FrameBuffer(numParticles, numParticles, o);
 		this._fboTargetVel  = new alfrid.FrameBuffer(numParticles, numParticles, o);
 		this._fboExtra  	= new alfrid.FrameBuffer(numParticles, numParticles, o);
+
+
+		const shadowMapSize = 256 * 2;
+		this._fboShadow = new alfrid.FrameBuffer(shadowMapSize, shadowMapSize, {minFilter:GL.LINEAR, magFilter:GL.LINEAR, type:GL.FLOAT});
 	}
 
 
@@ -51,7 +91,8 @@ class SceneApp extends alfrid.Scene {
 		this._bCopy = new alfrid.BatchCopy();
 		this._bAxis = new alfrid.BatchAxis();
 		this._bDots = new alfrid.BatchDotsPlane();
-		this._bBall = new alfrid.BatchBall();
+
+		this._vFloor = new ViewFloor();
 
 
 		//	views
@@ -103,6 +144,20 @@ class SceneApp extends alfrid.Scene {
 
 	}
 
+	_renderShadowMap() {
+		this._fboShadow.bind();
+		GL.clear(1, 0, 0, 1);
+		GL.setMatrices(this._cameraLight);
+		let p = this._count / Config.skipCount;
+		this._vRender.renderShadow(
+			this._fboTargetPos.getTexture(), 
+			this._fboCurrentPos.getTexture(), 
+			p, 
+			this._fboExtra.getTexture()
+		);
+		this._fboShadow.unbind();
+	}
+
 
 	render() {
 
@@ -112,17 +167,31 @@ class SceneApp extends alfrid.Scene {
 			this.updateFbo();
 		}
 
+		this._renderShadowMap();
+		GL.setMatrices(this.camera);
+
 		let p = this._count / Config.skipCount;
 
 		GL.clear(0, 0, 0, 0);
 		this._bAxis.draw();
 		this._bDots.draw();
 
-		this._vRender.render(this._fboTargetPos.getTexture(), this._fboCurrentPos.getTexture(), p, this._fboExtra.getTexture());
+		this._vRender.render(
+			this._fboTargetPos.getTexture(), 
+			this._fboCurrentPos.getTexture(), 
+			p, 
+			this._fboExtra.getTexture(), 
+			this._shadowMatrix, 
+			this._fboShadow.getTexture()
+		);
 
-		const size = 128;
+		this._vFloor.render(this._shadowMatrix, this._fboShadow.getTexture());
+
+		const size = 128 * 1;
 		GL.viewport(0, 0, size, size);
 		this._bCopy.draw(this._fboTargetPos.getTexture());
+		GL.viewport(size, 0, size, size);
+		this._bCopy.draw(this._fboShadow.getTexture());
 	}
 
 

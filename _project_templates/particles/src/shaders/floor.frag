@@ -1,6 +1,9 @@
-precision highp float;
+// copy.frag
 
-varying vec4 vColor;
+#define SHADER_NAME SIMPLE_TEXTURE
+
+precision highp float;
+varying vec2 vTextureCoord;
 varying vec4 vShadowCoord;
 uniform sampler2D textureDepth;
 
@@ -19,8 +22,8 @@ float PCFShadow(sampler2D depths, vec2 size, vec4 shadowCoord) {
 	vec2 uv = shadowCoord.xy;
 	float count = 0.0;
 
-	for(int x=-1; x<1; x++){
-		for(int y=-1; y<1; y++){
+	for(int x=-1; x<=1; x++){
+		for(int y=-1; y<=1; y++){
 			vec2 off = vec2(x,y);
 			off /= size;
 
@@ -38,25 +41,9 @@ float PCFShadow(sampler2D depths, vec2 size, vec4 shadowCoord) {
 }
 
 void main(void) {
-	if(distance(gl_PointCoord, vec2(.5)) > .5) discard;
-
 	vec4 shadowCoord = vShadowCoord / vShadowCoord.w;
-
-	vec2 uv = shadowCoord.xy;
-	float d = texture2D(textureDepth, uv).r;
-
-
-#ifdef USE_PCF
 	float s = PCFShadow(textureDepth, uMapSize, shadowCoord);
-#else
-	float s = 1.0;
-	if(d < shadowCoord.z - bias) {
-		s = 0.0;
-	}
-#endif
 	s = mix(s, 1.0, .25);
-	vec4 color = vColor;
-	color.rgb *= s;
 
-    gl_FragColor = color;
+    gl_FragColor = vec4(vec3(s), 1.0);
 }
