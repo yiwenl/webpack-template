@@ -8,7 +8,6 @@ import ViewSim from './ViewSim';
 import ViewFloor from './ViewFloor';
 import fs from 'shaders/normal.frag';
 import Config from './Config';
-import Settings from './Settings';
 
 window.getAsset = function(id) {
 	return assets.find( (a) => a.id === id).file;
@@ -16,8 +15,6 @@ window.getAsset = function(id) {
 
 class SceneApp extends alfrid.Scene {
 	constructor() {
-		Settings.init();
-
 		super();
 		GL.enableAlphaBlending();
 
@@ -55,11 +52,6 @@ class SceneApp extends alfrid.Scene {
 		shader.bind();
 		GL.draw(mesh);
 		this._fboParticle.unbind();
-
-
-		setTimeout(()=> {
-			gui.add(Config, 'numParticles', 10, 1024).step(1).onFinishChange(Settings.reload);	
-		}, 500);
 
 		
 	}
@@ -179,7 +171,7 @@ class SceneApp extends alfrid.Scene {
 
 		const s = 32;
 		GL.viewport(0, 0, s, s);
-		this._bCopy.draw(this._fboParticle.getTexture());
+		// this._bCopy.draw(this._fboParticle.getTexture());
 		// this._bCopy.draw(this._fboShadow.getDepthTexture());
 
 		// GL.viewport(s, 0, s, s);

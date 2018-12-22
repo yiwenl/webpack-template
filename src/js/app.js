@@ -3,11 +3,12 @@ import debugPolyfill from './debug/debugPolyfill';
 import alfrid, { GL } from 'alfrid';
 import SceneApp from './SceneApp';
 import AssetsLoader from 'assets-loader';
-
+import Settings from './Settings';
 import assets from './asset-list';
 import Assets from './Assets';
 
 import Capture from './utils/Capture';
+import addControls from './debug/addControls';
 
 if(document.body) {
 	_init();
@@ -59,6 +60,11 @@ function _onImageLoaded(o) {
 
 
 function _init3D() {
+	console.log('IS_DEVELOPMENT', !!window.isDevelopment);
+	if(window.isDevelopment) { 
+		Settings.init();	 
+	}
+
 	//	CREATE CANVAS
 	const canvas = document.createElement('canvas');
 	const container = document.body.querySelector('.container');
@@ -74,5 +80,8 @@ function _init3D() {
 	//	CREATE SCENE
 	const scene = new SceneApp();
 
+	if(window.isDevelopment) { 
+		addControls(scene);
+	}
 	
 }

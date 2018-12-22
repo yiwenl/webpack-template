@@ -32,7 +32,7 @@ class ViewObjModel extends alfrid.View {
             'HAS_OCCLUSIONMAP': 1,
         };
         const defineStr = definesToString(defines);
-        console.log(defineStr);
+        // console.log(defineStr);
         let _vs = `${defineStr}\n${vs}`;
         let _fs = `${defineStr}\n${fs}`;
 
@@ -44,12 +44,7 @@ class ViewObjModel extends alfrid.View {
 	_init() {
 		this.mesh = Assets.get('model');
 
-		this.roughness = 1;
-		this.metallic = 0;
 		this.baseColor = [1, 1, 1];
-
-		gui.add(this, 'roughness', 0, 1);
-		gui.add(this, 'metallic', 0, 1);
 	}
 
 
@@ -68,8 +63,8 @@ class ViewObjModel extends alfrid.View {
 		textureIrr.bind(2);
 
 		this.shader.uniform('uBaseColor', 'uniform3fv', this.baseColor);
-		this.shader.uniform('uRoughness', 'uniform1f', this.roughness);
-		this.shader.uniform('uMetallic', 'uniform1f', this.metallic);
+		this.shader.uniform('uRoughness', 'uniform1f', Config.roughness);
+		this.shader.uniform('uMetallic', 'uniform1f', Config.metallic);
 		this.shader.uniform('uSpecular', 'uniform1f', this.specular);
 
 		//	pbr
