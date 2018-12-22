@@ -7,6 +7,8 @@ import AssetsLoader from 'assets-loader';
 import assets from './asset-list';
 import Assets from './Assets';
 
+import Capture from './utils/Capture';
+
 if(document.body) {
 	_init();
 } else {
@@ -59,11 +61,12 @@ function _onImageLoaded(o) {
 function _init3D() {
 	//	CREATE CANVAS
 	const canvas = document.createElement('canvas');
+	const container = document.body.querySelector('.container');
 	canvas.className = 'Main-Canvas';
-	document.body.appendChild(canvas);
+	container.appendChild(canvas);
 
 	//	INIT 3D TOOL
-	GL.init(canvas, {ignoreWebgl2:true});
+	GL.init(canvas, {ignoreWebgl2:true, preserveDrawingBuffer:true});
 
 	//	INIT ASSETS
 	Assets.init();

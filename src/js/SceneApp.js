@@ -17,6 +17,7 @@ class SceneApp extends Scene {
 		this.orbitalControl.radius.value = 5;
 	}
 
+
 	_initTextures() {
 		console.log('init textures');
 	}
@@ -46,10 +47,27 @@ class SceneApp extends Scene {
 	}
 
 
-	resize() {
+	toResize(w, h) {
 		const { innerWidth, innerHeight, devicePixelRatio } = window;
-		GL.setSize(innerWidth, innerHeight);
+		w = w || innerWidth;
+		h = h || innerHeight;
+		GL.setSize(w, h);
+		let tw = Math.min(w, innerWidth);
+		let th = Math.min(h, innerHeight);
+
+		const sx = innerWidth / w;
+		const sy = innerHeight / h;
+		const scale = Math.min(sx, sy);
+		tw = w * scale;
+		th = h * scale;
+
+		GL.canvas.style.width = `${tw}px`;
+		GL.canvas.style.height = `${th}px`;
 		this.camera.setAspectRatio(GL.aspectRatio);
+	}
+
+	resize() {
+		this.toResize(window.innerWidth, window.innerHeight);
 	}
 }
 

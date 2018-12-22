@@ -24,6 +24,7 @@ class ViewObjModel extends alfrid.View {
 	
 	constructor() {
 		const defines = {
+			'USE_TEX_LOD': !!GL.getExtension('EXT_shader_texture_lod') ? 1 : 0,
             'USE_IBL': 1,
             'HAS_BASECOLORMAP': 0,
             'HAS_NORMALMAP': 0,
@@ -35,6 +36,7 @@ class ViewObjModel extends alfrid.View {
         let _vs = `${defineStr}\n${vs}`;
         let _fs = `${defineStr}\n${fs}`;
 
+        // console.log(_fs);
 		super(_vs, _fs);
 	}
 
