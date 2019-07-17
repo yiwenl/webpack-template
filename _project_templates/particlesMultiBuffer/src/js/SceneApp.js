@@ -169,12 +169,13 @@ class SceneApp extends alfrid.Scene {
 		this._renderParticles();
 		this._vFloor.render(this._shadowMatrix, this._fboShadow.getDepthTexture());
 
-		const s = 32;
+		const s = 100;
 		GL.viewport(0, 0, s, s);
-		// this._bCopy.draw(this._fboParticle.getTexture());
+		this._bCopy.draw(this._fboCurrent.getTexture(0));
 		// this._bCopy.draw(this._fboShadow.getDepthTexture());
 
-		// GL.viewport(s, 0, s, s);
+		GL.viewport(s, 0, s, s);
+		this._bCopy.draw(this.textureParticle);
 		// this._bCopy.draw(this._fboShadow.getTexture());
 	}
 

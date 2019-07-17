@@ -21,6 +21,13 @@ const refresh = () => {
 	window.history.pushState('experiment', 'Title', window.location.origin+window.location.pathname + '?config=' + JSON.stringify(Config));	
 }
 
+const reset = () => {
+	if(!enabled) {
+		return;
+	}
+	window.location.href = window.location.origin+window.location.pathname;
+}
+
 
 let delayIndex = -1;
 
@@ -55,6 +62,7 @@ const init = (mEnabled=true) => {
 
 export default {
 	enabled,
+	reset,
 	reload,
 	refresh,
 	delayReload,

@@ -22,7 +22,7 @@ const refresh = () => {
 }
 
 const reset = () => {
-	window.location.href = window.location.origin;
+	window.location.href = window.location.origin+window.location.pathname
 }
 
 
