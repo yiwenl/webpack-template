@@ -43,6 +43,7 @@ class SceneApp extends Scene {
 		this._bAxis.draw();
 		this._bDots.draw();
 
+
 		this._vModel.render(Assets.get('studio_radiance'), Assets.get('irr'), Assets.get('aomap'));
 	}
 

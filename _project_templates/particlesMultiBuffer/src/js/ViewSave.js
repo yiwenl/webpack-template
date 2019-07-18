@@ -4,7 +4,7 @@ import alfrid, { GL } from 'alfrid';
 import vs from 'shaders/save.vert';
 import fs from 'shaders/save.frag';
 import Config from './Config';
-const random = function (min, max) { return min + Math.random() * (max - min);	};
+import { random, randomGaussian } from 'randomutils';
 
 class ViewSave extends alfrid.View {
 	
@@ -39,6 +39,8 @@ class ViewSave extends alfrid.View {
 			return v;
 		}
 
+		const n = 4;
+
 		for(let j = 0; j < numParticles; j++) {
 			for(let i = 0; i < numParticles; i++) {
 				// positions.push([random(-range, range), random(-range, range), random(-range, range)]);
@@ -47,7 +49,7 @@ class ViewSave extends alfrid.View {
 				ux = i / numParticles * 2.0 - 1.0 + .5 / numParticles;
 				uy = j / numParticles * 2.0 - 1.0 + .5 / numParticles;
 
-				extras.push([Math.random(), Math.random(), Math.random()]);
+				extras.push([randomGaussian(n), randomGaussian(n), randomGaussian(n)]);
 				coords.push([ux, uy]);
 				indices.push(count);
 				count ++;
