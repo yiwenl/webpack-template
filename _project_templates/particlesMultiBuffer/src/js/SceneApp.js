@@ -8,6 +8,7 @@ import ViewSim from './ViewSim';
 import ViewFloor from './ViewFloor';
 import Config from './Config';
 import ParticleTexture from './ParticleTexture';
+import { resize } from './utils';
 
 window.getAsset = function(id) {
 	return assets.find( (a) => a.id === id).file;
@@ -48,13 +49,29 @@ class SceneApp extends alfrid.Scene {
 		const o = {
 			minFilter:GL.NEAREST,
 			magFilter:GL.NEAREST,
-			type:GL.FLOAT
+			type:GL.FLOAT,
+			mipmap:false
 		};
 
-		this._fbo 			= new FboPingPong(numParticles, numParticles, o, 3);
+		// this._fbo 			= new FboPingPong(numParticles, numParticles, o, 3);
+		this._fbos = [];
+		let i = Config.numSets;
+		while(i--) {
+			this._fbos.push(new FboPingPong(numParticles, numParticles, o, 3));
+		}
+
+		this._fbos.forEach(fbo => {
+			fbo.read.getTexture(0).minFilter = GL.NEAREST;
+			fbo.read.getTexture(0).magFilter = GL.NEAREST;
+
+			fbo.write.getTexture(0).minFilter = GL.NEAREST;
+			fbo.write.getTexture(0).magFilter = GL.NEAREST;
+		});
 
 		this._fboShadow = new alfrid.FrameBuffer(1024, 1024, {minFilter:GL.LINEAR, magFilter:GL.LINEAR});
 		this._textureParticle = new ParticleTexture();
+
+		console.log('Num particles : ', numParticles * numParticles * Config.numSets);
 	}
 
 
@@ -74,41 +91,48 @@ class SceneApp extends alfrid.Scene {
 		this._vRenderShadow = new ViewRenderShadow();
 		this._vSim 	  = new ViewSim();
 
-		this._vSave = new ViewSave();
-		GL.setMatrices(this.cameraOrtho);
-
-		this._fbo.read.bind();
-		GL.clear(0, 0, 0, 0);
-		this._vSave.render();
-		this._fbo.read.unbind();
+		this._fbos.forEach( fbo => {
+			this._vSave = new ViewSave();
+			fbo.read.bind();
+			GL.clear(0, 0, 0, 0);
+			this._vSave.render();
+			fbo.read.unbind();	
+		});
+		
 
 		GL.setMatrices(this.camera);
 	}
 
 
 	updateFbo() {
-		this._fbo.write.bind();
-		GL.clear(0, 0, 0, 1);
-		this._vSim.render(
-			this._fbo.read.getTexture(1), 
-			this._fbo.read.getTexture(0), 
-			this._fbo.read.getTexture(2));
-		this._fbo.write.unbind();
-		this._fbo.swap();
+		this._fbos.forEach( fbo => {
+			fbo.write.bind();
+			GL.clear(0, 0, 0, 1);
+			this._vSim.render(
+				fbo.read.getTexture(1), 
+				fbo.read.getTexture(0), 
+				fbo.read.getTexture(2));
+			fbo.write.unbind();
+			fbo.swap();	
+		})
+		
 	}
 
 
 	_renderParticles() {
 		let p = this._count / Config.skipCount;
-		this._vRender.render(
-			this._fbo.write.getTexture(0), 
-			this._fbo.read.getTexture(0), 
-			p, 
-			this._fbo.read.getTexture(2),
-			this._shadowMatrix, 
-			this._fboShadow.getDepthTexture(),
-			this.textureParticle
-		);
+		this._fbos.forEach( fbo => {
+			this._vRender.render(
+				fbo.write.getTexture(0), 
+				fbo.read.getTexture(0), 
+				p, 
+				fbo.read.getTexture(2),
+				this._shadowMatrix, 
+				this._fboShadow.getDepthTexture(),
+				this.textureParticle
+			);	
+		})
+		
 	}
 
 	_renderShadowMap() {
@@ -116,12 +140,16 @@ class SceneApp extends alfrid.Scene {
 		GL.clear(0, 0, 0, 0);
 		GL.setMatrices(this._cameraLight);
 		let p = this._count / Config.skipCount;
-		this._vRenderShadow.render(
-			this._fbo.read.getTexture(0), 
-			this._fbo.read.getTexture(0), 
-			p, 
-			this._fbo.read.getTexture(2)
-		);
+
+		this._fbos.forEach( fbo => {
+			this._vRenderShadow.render(
+				fbo.read.getTexture(0), 
+				fbo.read.getTexture(0), 
+				p, 
+				fbo.read.getTexture(2)
+			);	
+		})
+		
 		this._fboShadow.unbind();
 	}
 
@@ -144,20 +172,16 @@ class SceneApp extends alfrid.Scene {
 		this._renderParticles();
 		this._vFloor.render(this._shadowMatrix, this._fboShadow.getDepthTexture());
 
-		const s = 100;
-		GL.viewport(0, 0, s, s);
-		this._bCopy.draw(this._fbo.read.getTexture(0));
-		// this._bCopy.draw(this._fboShadow.getDepthTexture());
-
-		GL.viewport(s, 0, s, s);
-		this._bCopy.draw(this.textureParticle);
+		const s = 256;
+		// GL.viewport(0, 0, s, s);
+		// this._bCopy.draw(this._fbos[0].read.getTexture());
 		// this._bCopy.draw(this._fboShadow.getTexture());
 	}
 
 
-	resize() {
-		const { innerWidth, innerHeight, devicePixelRatio } = window;
-		GL.setSize(innerWidth, innerHeight);
+
+	resize(w, h) {
+		resize(w, h);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}
 

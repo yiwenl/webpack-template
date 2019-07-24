@@ -27,7 +27,7 @@ void main(void) {
 	float dist           = length(pos);
 	if(dist > maxRadius) {
 		float f          = pow(2.0, (dist - maxRadius) * 2.0) * 0.05;
-		acc              -= normalize(pos) * f;
+		acc              -= normalize(pos) * f * 0.25;
 	}
 	
 	vel                  += acc * .003 * speedOffset;
