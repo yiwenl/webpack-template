@@ -9,6 +9,7 @@ const assetsToLoad = [
 	{"id":"irr_posx","url":"assets/img/irr_posx.hdr","type":"binary"},
 	{"id":"irr_posy","url":"assets/img/irr_posy.hdr","type":"binary"},
 	{"id":"irr_posz","url":"assets/img/irr_posz.hdr","type":"binary"},
+	{"id":"lutMap","url":"assets/img/lutMap.png","type":"png"},
 	{"id":"noise","url":"assets/img/noise.png","type":"png"},
 	{"id":"studio_radiance","url":"assets/img/studio_radiance.dds","type":"binary"}
 ];

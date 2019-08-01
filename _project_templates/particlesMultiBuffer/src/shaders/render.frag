@@ -56,26 +56,23 @@ vec3 diffuse(vec3 N, vec3 L, vec3 C) {
 void main(void) {
 	// if(distance(gl_PointCoord, vec2(.5)) > .5) discard;
 	vec2 uv = gl_PointCoord;
-	uv.y = 1.0 - uv.y;
+	// uv.y = 1.0 - uv.y;
 	vec4 colorMap = texture2D(textureParticle, uv);
-	if(colorMap.r <= 0.0) {
+	if(colorMap.a <= 0.0) {
 		discard;
 	}
-	vec3 N = colorMap.rgb * 2.0 - 1.0;
-
-	vec4 shadowCoord = vShadowCoord / vShadowCoord.w;
-	float s = PCFShadow(textureDepth, uMapSize, shadowCoord);
-	s = mix(s, 1.0, .25);
-
-	float d = diffuse(N, LIGHT_POS);
-	// d = mix(d, 1.0, .25);
-
-	vec4 color = vec4(vec3(d), 1.0);
-	color.rgb *= s;
-
-	float fogDistance = gl_FragCoord.z / gl_FragCoord.w;
-	float fogAmount = fogFactorExp2(fogDistance - 4.5, FOG_DENSITY);
+	vec3 _baseColor     = colorMap.rgb;
+	
+	vec4 shadowCoord    = vShadowCoord / vShadowCoord.w;
+	float s             = PCFShadow(textureDepth, uMapSize, shadowCoord);
+	s                   = mix(s, 1.0, .25);
+	
+	vec4 color          = vec4(_baseColor, 1.0);
+	color.rgb           *= s;
+	
+	float fogDistance   = gl_FragCoord.z / gl_FragCoord.w;
+	float fogAmount     = fogFactorExp2(fogDistance - 4.5, FOG_DENSITY);
 	const vec4 fogColor = vec4(0.0, 0.0, 0.0, 1.0); // white
-
-	gl_FragColor = mix(color, fogColor, fogAmount);
+	
+	gl_FragColor        = mix(color, fogColor, fogAmount);
 }

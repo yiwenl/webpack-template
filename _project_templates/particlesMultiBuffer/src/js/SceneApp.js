@@ -80,9 +80,6 @@ class SceneApp extends alfrid.Scene {
 		
 		//	helpers
 		this._bCopy = new alfrid.BatchCopy();
-		this._bAxis = new alfrid.BatchAxis();
-		this._bDots = new alfrid.BatchDotsPlane();
-		this._bBall = new alfrid.BatchBall();
 		this._vFloor = new ViewFloor();
 
 
@@ -166,14 +163,13 @@ class SceneApp extends alfrid.Scene {
 
 		GL.clear(0, 0, 0, 0);
 		GL.setMatrices(this.camera);
-		// this._bAxis.draw();
-		// this._bDots.draw();
 
 		this._renderParticles();
 		this._vFloor.render(this._shadowMatrix, this._fboShadow.getDepthTexture());
 
-		const s = 256;
+		const s = 64;
 		// GL.viewport(0, 0, s, s);
+		// this._bCopy.draw(this.textureParticle);
 		// this._bCopy.draw(this._fbos[0].read.getTexture());
 		// this._bCopy.draw(this._fboShadow.getTexture());
 	}
