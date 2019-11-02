@@ -1,16 +1,15 @@
 // ViewSave.js
 
-import alfrid from 'alfrid';
-
-const vsSave = require('../shaders/save.vert');
-const fsSave = require('../shaders/save.frag');
-const GL = alfrid.GL;
+import alfrid, { GL } from 'alfrid';
+import vs from 'shaders/save.vert';
+import fs from 'shaders/save.frag';
+import Config from './Config';
 const random = function (min, max) { return min + Math.random() * (max - min);	};
 
 class ViewSave extends alfrid.View {
 	
 	constructor() {
-		super(vsSave, fsSave);
+		super(vs, fs);
 	}
 
 
@@ -21,7 +20,7 @@ class ViewSave extends alfrid.View {
 		let extras = [];
 		let count = 0;
 
-		let numParticles = params.numParticles;
+		let numParticles = Config.numParticles;
 		let totalParticles = numParticles * numParticles;
 		console.debug('Total Particles : ', totalParticles);
 		let ux, uy;

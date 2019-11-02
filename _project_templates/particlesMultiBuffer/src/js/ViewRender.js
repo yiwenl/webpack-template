@@ -1,14 +1,14 @@
 // ViewRender.js
 
-import alfrid from 'alfrid';
-const vsRender = require('../shaders/render.vert');
-const fsRender = require('../shaders/render.frag');
-let GL = alfrid.GL;
+import alfrid, { GL } from 'alfrid';
+import vs from 'shaders/render.vert';
+import fs from 'shaders/render.frag';
+import Config from './Config';
 
 class ViewRender extends alfrid.View {
 	
 	constructor() {
-		super(vsRender, fsRender);
+		super(vs, fs);
 		this.time = Math.random() * 0xFFF;
 	}
 
@@ -18,7 +18,7 @@ class ViewRender extends alfrid.View {
 		let coords       = [];
 		let indices      = []; 
 		let count        = 0;
-		let numParticles = params.numParticles;
+		let numParticles = Config.numParticles;
 		let ux, uy;
 
 		for(let j = 0; j < numParticles; j++) {
@@ -38,7 +38,7 @@ class ViewRender extends alfrid.View {
 	}
 
 
-	render(textureCurr, textureNext, p, textureExtra) {
+	render(textureCurr, textureNext, p, textureExtra, mShadowMatrix, mTextureDepth, textureParticle) {
 		this.time += 0.1;
 		this.shader.bind();
 
@@ -50,6 +50,13 @@ class ViewRender extends alfrid.View {
 
 		this.shader.uniform('textureExtra', 'uniform1i', 2);
 		textureExtra.bind(2);
+
+		this.shader.uniform("textureParticle", "uniform1i", 4);
+		textureParticle.bind(4);
+
+		this.shader.uniform("uShadowMatrix", "mat4", mShadowMatrix);
+		this.shader.uniform("textureDepth", "uniform1i", 3);
+		mTextureDepth.bind(3);
 
 		this.shader.uniform('uViewport', 'vec2', [GL.width, GL.height]);
 		this.shader.uniform('percent', 'float', p);

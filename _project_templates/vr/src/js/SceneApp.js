@@ -122,10 +122,11 @@ class SceneApp extends Scene {
 
 	resize() {
 		let scale = VRUtils.canPresent ? 2 : 1;
-		if(GL.isMobile) scale = 1;
+		if(GL.isMobile) scale = window.devicePixelRatio;
 		GL.setSize(window.innerWidth * scale, window.innerHeight * scale);
 		this.camera.setAspectRatio(GL.aspectRatio);
 	}
+
 }
 
 

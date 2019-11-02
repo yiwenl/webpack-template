@@ -5,6 +5,7 @@ import alfrid, { GLTexture, GLCubeTexture, Mesh, ObjLoader } from 'alfrid';
 
 const Assets = {};
 let _assets = [];
+let assets;
 
 const getAsset = function(id) {
 	return assets.find( (a) => a.id === id).file;
@@ -15,7 +16,8 @@ const getExtension = function(mFile) {
 	return ary[ary.length - 1];
 }
 
-Assets.init = function() {
+Assets.init = function(mAssets) {
+	assets = mAssets;
 	let hdrCubemaps = {};
 	_assets = assetsToLoad.map((o)=> {
 		const ext = getExtension(o.url);
