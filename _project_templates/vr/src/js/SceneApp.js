@@ -1,133 +1,116 @@
 // SceneApp.js
 
-import alfrid, { Scene, GL } from 'alfrid';
-import ViewObjModel from './ViewObjModel';
-import Assets from './Assets';
-import VRUtils from './utils/VRUtils';
+import alfrid, { Scene, GL } from 'alfrid'
+import Assets from './Assets'
+import VRUtils from './utils/VRUtils'
 
-const scissor = function(x, y, w, h) {
-	GL.scissor(x, y, w, h);
-	GL.viewport(x, y, w, h);
+const scissor = function (x, y, w, h) {
+  GL.scissor(x, y, w, h)
+  GL.viewport(x, y, w, h)
 }
 
 class SceneApp extends Scene {
-	constructor() {
-		super();
-		
-		//	ORBITAL CONTROL
-		this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.1;
-		this.orbitalControl.radius.value = 5;
+  constructor () {
+    super()
 
+    //	ORBITAL CONTROL
+    this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.1
+    this.orbitalControl.radius.value = 5
 
-		//	VR CAMERA
-		this.cameraVR = new alfrid.Camera();
+    //	VR CAMERA
+    this.cameraVR = new alfrid.Camera()
 
-		//	MODEL MATRIX
-		this._modelMatrix = mat4.create();
-		console.log('Has VR :', VRUtils.hasVR);
+    //	MODEL MATRIX
+    this._modelMatrix = mat4.create()
+    console.log('Has VR :', VRUtils.hasVR)
 
-		if(VRUtils.canPresent) {
-			mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, 0, -3));
-			GL.enable(GL.SCISSOR_TEST);
-			this.toRender();
+    if (VRUtils.canPresent) {
+      mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, 0, -3))
+      GL.enable(GL.SCISSOR_TEST)
+      this.toRender()
 
-			this.resize();
-		}
-	}
+      this.resize()
+    }
+  }
 
-	_initTextures() {
-		console.log('init textures');
-	}
+  _initTextures () {
+    console.log('init textures')
+  }
 
+  _initViews () {
+    console.log('init views')
 
-	_initViews() {
-		console.log('init views');
+    this._bCopy = new alfrid.BatchCopy()
+    this._bAxis = new alfrid.BatchAxis()
+    this._bDots = new alfrid.BatchDotsPlane()
+  }
 
-		this._bCopy = new alfrid.BatchCopy();
-		this._bAxis = new alfrid.BatchAxis();
-		this._bDots = new alfrid.BatchDotsPlane();
-		this._bSky = new alfrid.BatchSkybox();
+  render () {
+    if (!VRUtils.canPresent) { this.toRender() }
+  }
 
-		this._vModel = new ViewObjModel();
-	}
+  toRender () {
+    if (VRUtils.canPresent) {	VRUtils.vrDisplay.requestAnimationFrame(() => this.toRender())	}
 
+    VRUtils.getFrameData()
 
-	render() {
-		if(!VRUtils.canPresent) { this.toRender(); }
-	}
+    if (VRUtils.isPresenting) {
+      const w2 = GL.width / 2
+      VRUtils.setCamera(this.cameraVR, 'left')
+      scissor(0, 0, w2, GL.height)
+      GL.setMatrices(this.cameraVR)
+      GL.rotate(this._modelMatrix)
+      this.renderScene()
 
+      VRUtils.setCamera(this.cameraVR, 'right')
+      scissor(w2, 0, w2, GL.height)
+      GL.setMatrices(this.cameraVR)
+      GL.rotate(this._modelMatrix)
+      this.renderScene()
 
-	toRender() {
-		if(VRUtils.canPresent) {	VRUtils.vrDisplay.requestAnimationFrame(()=>this.toRender());	}		
+      VRUtils.submitFrame()
 
-		VRUtils.getFrameData();
+      //	re-render whole
+      scissor(0, 0, GL.width, GL.height)
 
-		if(VRUtils.isPresenting) {
-			
-			const w2 = GL.width/2;
-			VRUtils.setCamera(this.cameraVR, 'left');
-			scissor(0, 0, w2, GL.height);
-			GL.setMatrices(this.cameraVR);
-			GL.rotate(this._modelMatrix);
-			this.renderScene();
+      GL.clear(0, 0, 0, 0)
+      mat4.copy(this.cameraVR.projection, this.camera.projection)
 
+      GL.setMatrices(this.cameraVR)
+      GL.rotate(this._modelMatrix)
+      this.renderScene()
+    } else {
+      if (VRUtils.canPresent) {
+        VRUtils.setCamera(this.cameraVR, 'left')
+        mat4.copy(this.cameraVR.projection, this.camera.projection)
 
-			VRUtils.setCamera(this.cameraVR, 'right');
-			scissor(w2, 0, w2, GL.height);
-			GL.setMatrices(this.cameraVR);
-			GL.rotate(this._modelMatrix);
-			this.renderScene();
+        scissor(0, 0, GL.width, GL.height)
+        GL.setMatrices(this.cameraVR)
+        GL.rotate(this._modelMatrix)
+        this.renderScene()
+      } else {
+        GL.setMatrices(this.camera)
+        GL.rotate(this._modelMatrix)
+        this.renderScene()
+      }
+    }
+  }
 
-			VRUtils.submitFrame();
+  renderScene () {
+    GL.clear(0, 0, 0, 0)
+    this._bSky.draw(Assets.get('irr'))
 
-			//	re-render whole
-			scissor(0, 0, GL.width, GL.height);
+    this._bAxis.draw()
 
-			GL.clear(0, 0, 0, 0);
-			mat4.copy(this.cameraVR.projection, this.camera.projection);
+    this._vModel.render(Assets.get('studio_radiance'), Assets.get('irr'), Assets.get('aomap'))
+  }
 
-			GL.setMatrices(this.cameraVR);
-			GL.rotate(this._modelMatrix);
-			this.renderScene();
-
-		} else {
-
-			if(VRUtils.canPresent) {
-				VRUtils.setCamera(this.cameraVR, 'left');
-				mat4.copy(this.cameraVR.projection, this.camera.projection);
-
-				scissor(0, 0, GL.width, GL.height);
-				GL.setMatrices(this.cameraVR);
-				GL.rotate(this._modelMatrix);
-				this.renderScene();
-			} else {
-				GL.setMatrices(this.camera);
-				GL.rotate(this._modelMatrix);
-				this.renderScene();	
-			}
-			
-		}
-	}
-
-
-	renderScene() {
-		GL.clear(0, 0, 0, 0);
-		this._bSky.draw(Assets.get('irr'));
-
-		this._bAxis.draw();
-
-		this._vModel.render(Assets.get('studio_radiance'), Assets.get('irr'), Assets.get('aomap'));
-	}
-
-
-	resize() {
-		let scale = VRUtils.canPresent ? 2 : 1;
-		if(GL.isMobile) scale = window.devicePixelRatio;
-		GL.setSize(window.innerWidth * scale, window.innerHeight * scale);
-		this.camera.setAspectRatio(GL.aspectRatio);
-	}
-
+  resize () {
+    let scale = VRUtils.canPresent ? 2 : 1
+    if (GL.isMobile) scale = window.devicePixelRatio
+    GL.setSize(window.innerWidth * scale, window.innerHeight * scale)
+    this.camera.setAspectRatio(GL.aspectRatio)
+  }
 }
 
-
-export default SceneApp;
+export default SceneApp
