@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run html:watch & NODE_ENV=development webpack-dev-server --open --mode development & node ./tasks/watch-asset.js & node ./tasks/shader-watcher.js",
     "start:windows": "concurrently \"set NODE_ENV=development&&webpack-dev-server --open --mode development\" \"npm run html:watch\" \"npm run shader\" \"npm run assets\"",
-    "build:dev": "npm run html & webpack --progress --profile --colors",
+    "build:dev": "NODE_ENV=development npm run html & NODE_ENV=development webpack --progress --profile --colors --mode development",
     "build": "NODE_ENV=production npm run html & NODE_ENV=production webpack --progress --profile --colors --mode production",
     "watch": "webpack --watch",
     "html": "node ./tasks/html.js",

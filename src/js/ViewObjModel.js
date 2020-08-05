@@ -36,7 +36,6 @@ class ViewObjModel extends alfrid.View {
         let _vs = `${defineStr}\n${vs}`;
         let _fs = `${defineStr}\n${fs}`;
 
-        // console.log(_fs);
 		super(_vs, _fs);
 	}
 
