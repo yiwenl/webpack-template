@@ -1,6 +1,4 @@
-// reflection.vert
-
-#define SHADER_NAME REFLECTION_VERTEX
+#define SHADER_NAME pbr_vert
 
 precision highp float;
 attribute vec3 aVertexPosition;
@@ -14,28 +12,16 @@ uniform mat3 uNormalMatrix;
 uniform mat3 uModelViewMatrixInverse;
 
 varying vec2 vTextureCoord;
-
 varying vec3 vNormal;
 varying vec3 vPosition;
-varying vec3 vWsPosition;
-varying vec3 vEyePosition;
-varying vec3 vWsNormal;
 
 
 void main(void) {
-	vec3 position 			= aVertexPosition;
-	vec4 worldSpacePosition	= uModelMatrix * vec4(position, 1.0);
-    vec4 viewSpacePosition	= uViewMatrix * worldSpacePosition;
+	vec4 position = uModelMatrix * vec4(aVertexPosition, 1.0);
+	vPosition     = position.xyz / position.w;
 	
-    vNormal					= uNormalMatrix * aNormal;
-    vPosition				= viewSpacePosition.xyz;
-	vWsPosition				= worldSpacePosition.xyz;
+	vNormal       = normalize(vec3(uModelMatrix * vec4(aNormal, 0.0)));
+	vTextureCoord = aTextureCoord;
 	
-	vec4 eyeDirViewSpace	= viewSpacePosition - vec4( 0, 0, 0, 1 );
-	vEyePosition			= -vec3( uModelViewMatrixInverse * eyeDirViewSpace.xyz );
-	vWsNormal				= normalize( uModelViewMatrixInverse * vNormal );
-	
-    gl_Position				= uProjectionMatrix * viewSpacePosition;
-
-	vTextureCoord			= aTextureCoord;
+	gl_Position   = uProjectionMatrix * uViewMatrix * position;
 }

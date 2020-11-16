@@ -1,97 +1,95 @@
-// webpack.config.js
-const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const path = require("path");
+const pathOutput = path.resolve(__dirname, "dist");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
-const pathOutput = path.resolve(__dirname, 'dist');
-const pathNodeModules = path.resolve(__dirname, 'node_modules');
 const env = process.env.NODE_ENV;
-const isProd = env === 'production';
+const isProd = env === "production";
+console.log("Environment isProd :", isProd);
 
-console.log('Environment isProd :', isProd);
+const entry = isProd
+  ? { app: "./src/js/app.js" }
+  : { app: "./src/js/app.js", debug: "./src/js/debug/debug.js" };
+const output = isProd
+  ? {
+      filename: "assets/js/app.js",
+      path: pathOutput,
+    }
+  : {
+      filename: "assets/js/[name].js",
+      path: pathOutput,
+    };
 
-const plugins = [
-	new webpack.HotModuleReplacementPlugin()
-];
+const devtool = isProd ? "source-map" : "inline-source-map";
 
-if(isProd) {
-	plugins.push(new webpack.optimize.UglifyJsPlugin({
-		sourceMap:false,
-		compress: {
-			drop_debugger: true,
-			drop_console: true,
-			screw_ie8: true
-		},
-		comments:false,
-		mangle:false
-	}));
-	plugins.push(new ExtractTextPlugin('assets/css/main.css'));
-}
-
-const entry = isProd ? {app:'./src/js/app.js'}
-				: {app:'./src/js/app.js', debug:'./src/js/debug.js'};
-const output = isProd ? {
-		filename:'assets/js/app.js',
-		path: pathOutput
-	} : {
-		filename:'assets/js/[name].js',
-		path: pathOutput
-	};
-
-const devtool = isProd ? 'source-map' : 'inline-source-map';
-
-
-
-const config = {
-	entry,
-	devtool,
-	devServer: {
-		host:'0.0.0.0',
-		contentBase: './dist',
-		hot:true,
-		disableHostCheck:true
-	},
-	plugins,
-	output,
-	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				loader: 'babel-loader',
-				query: {
-					presets: ['env']
-				},
-				exclude: pathNodeModules
-			},
-			{
-				test: /\.css$/,
-				use: ['style-loader', 'css-loader'],
-				exclude: pathNodeModules
-			},
-			{
-				test: /\.scss$/,
-				use: isProd ?
-				ExtractTextPlugin.extract({
-					fallback:"style-loader",
-					use: ["css-loader?url=false", "sass-loader"]
-				}) : 
-				["style-loader", "css-loader?url=false", "sass-loader"]
-				,
-				exclude: pathNodeModules
-			},
-			{
-				test: /\.(glsl|vert|frag)$/,
-				use: ["raw-loader", "glslify-loader"],
-				exclude: pathNodeModules
-			}
-		]
-	},
-	resolve: {
-		alias: {
-			'libs':path.resolve(__dirname, 'src/js/libs'),
-			'shaders':path.resolve(__dirname, 'src/shaders')
-		}
-	}
-}
-
-module.exports = config;
+module.exports = {
+  entry,
+  devtool,
+  output,
+  devServer: {
+    https: true,
+    host: "0.0.0.0",
+    contentBase: "./dist",
+    hot: true,
+    disableHostCheck: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.hbs$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "handlebars-loader",
+        },
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: "html-loader",
+            options: { minimize: true },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader", // creates style nodes from JS strings
+          "css-loader", // translates CSS into CommonJS
+          "sass-loader", // compiles Sass to CSS, using Node Sass by default
+        ],
+      },
+      {
+        test: /\.(glsl|vert|frag)$/,
+        use: ["raw-loader", "glslify-loader"],
+      },
+    ],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css",
+    }),
+    // new BundleAnalyzerPlugin()
+  ],
+  optimization: {
+    minimizer: [new TerserPlugin({ parallel: true })],
+  },
+  resolve: {
+    alias: {
+      libs: path.resolve(__dirname, "src/js/libs"),
+      shaders: path.resolve(__dirname, "src/shaders"),
+    },
+  },
+};

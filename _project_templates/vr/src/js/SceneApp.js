@@ -1,116 +1,66 @@
 // SceneApp.js
 
-import alfrid, { Scene, GL } from 'alfrid'
-import Assets from './Assets'
-import VRUtils from './utils/VRUtils'
+import alfrid, { GL } from "alfrid";
+import VRUtils from "./VRUtils";
+import { mat4 } from "gl-matrix";
 
-const scissor = function (x, y, w, h) {
-  GL.scissor(x, y, w, h)
-  GL.viewport(x, y, w, h)
-}
+class SceneApp {
+  constructor() {
+    GL.enableAlphaBlending();
 
-class SceneApp extends Scene {
-  constructor () {
-    super()
+    this.camera = new alfrid.CameraPerspective();
+    this._initTextures();
+    this._initViews();
 
-    //	ORBITAL CONTROL
-    this.orbitalControl.rx.value = this.orbitalControl.ry.value = 0.1
-    this.orbitalControl.radius.value = 5
+    this.mtx = mat4.create();
+    mat4.translate(this.mtx, this.mtx, [0, 0, -1]);
 
-    //	VR CAMERA
-    this.cameraVR = new alfrid.Camera()
+    console.log("FLOAT", GL.FLOAT, GL.gl);
 
-    //	MODEL MATRIX
-    this._modelMatrix = mat4.create()
-    console.log('Has VR :', VRUtils.hasVR)
+    // events
 
-    if (VRUtils.canPresent) {
-      mat4.translate(this._modelMatrix, this._modelMatrix, vec3.fromValues(0, 0, -3))
-      GL.enable(GL.SCISSOR_TEST)
-      this.toRender()
-
-      this.resize()
-    }
+    VRUtils.on("onUpdate", (views) => this.update(views));
+    VRUtils.on("onRender", (views) => this.render(views));
   }
 
-  _initTextures () {
-    console.log('init textures')
+  _initTextures() {
+    console.log("init textures");
   }
 
-  _initViews () {
-    console.log('init views')
+  _initViews() {
+    console.log("init views");
 
-    this._bCopy = new alfrid.BatchCopy()
-    this._bAxis = new alfrid.BatchAxis()
-    this._bDots = new alfrid.BatchDotsPlane()
+    this._bCopy = new alfrid.BatchCopy();
+    this._bAxis = new alfrid.BatchAxis();
+    this._bDots = new alfrid.BatchDotsPlane();
+    this._bBall = new alfrid.BatchBall();
   }
 
-  render () {
-    if (!VRUtils.canPresent) { this.toRender() }
+  update() {
+    // console.log("update");
   }
 
-  toRender () {
-    if (VRUtils.canPresent) {	VRUtils.vrDisplay.requestAnimationFrame(() => this.toRender())	}
-
-    VRUtils.getFrameData()
-
-    if (VRUtils.isPresenting) {
-      const w2 = GL.width / 2
-      VRUtils.setCamera(this.cameraVR, 'left')
-      scissor(0, 0, w2, GL.height)
-      GL.setMatrices(this.cameraVR)
-      GL.rotate(this._modelMatrix)
-      this.renderScene()
-
-      VRUtils.setCamera(this.cameraVR, 'right')
-      scissor(w2, 0, w2, GL.height)
-      GL.setMatrices(this.cameraVR)
-      GL.rotate(this._modelMatrix)
-      this.renderScene()
-
-      VRUtils.submitFrame()
-
-      //	re-render whole
-      scissor(0, 0, GL.width, GL.height)
-
-      GL.clear(0, 0, 0, 0)
-      mat4.copy(this.cameraVR.projection, this.camera.projection)
-
-      GL.setMatrices(this.cameraVR)
-      GL.rotate(this._modelMatrix)
-      this.renderScene()
-    } else {
-      if (VRUtils.canPresent) {
-        VRUtils.setCamera(this.cameraVR, 'left')
-        mat4.copy(this.cameraVR.projection, this.camera.projection)
-
-        scissor(0, 0, GL.width, GL.height)
-        GL.setMatrices(this.cameraVR)
-        GL.rotate(this._modelMatrix)
-        this.renderScene()
-      } else {
-        GL.setMatrices(this.camera)
-        GL.rotate(this._modelMatrix)
-        this.renderScene()
-      }
-    }
+  render(views) {
+    GL.clear(0, 0, 0, 1);
+    views.forEach(({ viewport, viewMatrix, projectionMatrix }) => {
+      GL.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
+      mat4.copy(this.camera._projection, projectionMatrix);
+      mat4.copy(this.camera._matrix, viewMatrix);
+      GL.setMatrices(this.camera);
+      this._renderScene();
+    });
   }
 
-  renderScene () {
-    GL.clear(0, 0, 0, 0)
-    this._bSky.draw(Assets.get('irr'))
+  _renderScene() {
+    GL.rotate(this.mtx);
+    this._bAxis.draw();
+    this._bDots.draw();
 
-    this._bAxis.draw()
+    const s = 0.1;
+    this._bBall.draw([0, 0, 0], [s, s, s], [1, 1, 0]);
 
-    this._vModel.render(Assets.get('studio_radiance'), Assets.get('irr'), Assets.get('aomap'))
-  }
-
-  resize () {
-    let scale = VRUtils.canPresent ? 2 : 1
-    if (GL.isMobile) scale = window.devicePixelRatio
-    GL.setSize(window.innerWidth * scale, window.innerHeight * scale)
-    this.camera.setAspectRatio(GL.aspectRatio)
+    GL.rotate(mat4.create());
   }
 }
 
-export default SceneApp
+export default SceneApp;
