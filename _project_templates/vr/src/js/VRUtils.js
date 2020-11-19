@@ -25,12 +25,14 @@ class VRUtils extends EventDispatcher {
     });
   }
 
-  start() {
+  start(mWebgl2 = false) {
+    const contextTarget = mWebgl2 ? "webgl2" : "webgl";
+    console.log("contextTarget", contextTarget);
     return new Promise((resolve, reject) => {
       navigator.xr.requestSession("immersive-vr").then((session) => {
         this.session = session;
         this.canvas = document.createElement("canvas");
-        this._gl = this.canvas.getContext("webgl2", {
+        this._gl = this.canvas.getContext(contextTarget, {
           xrCompatible: true,
         });
 
@@ -83,6 +85,10 @@ class VRUtils extends EventDispatcher {
     gl.bindFramebuffer(gl.FRAMEBUFFER, glLayer.framebuffer);
     this.emit("onRender", views);
     this.session.requestAnimationFrame((t, frame) => this._onXRFrame(t, frame));
+  }
+
+  get isSupported() {
+    return this._isSupported;
   }
 }
 

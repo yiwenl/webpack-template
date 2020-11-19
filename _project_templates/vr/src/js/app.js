@@ -21,17 +21,21 @@ function _init() {
 }
 
 function initButton() {
+  const useWebGL2 = true;
   btnVR = document.body.querySelector(".btnVR");
   btnVR.addEventListener("click", () => {
-    VRUtils.start(true).then(xrStarted, logError);
+    VRUtils.start(useWebGL2).then(xrStarted, logError);
   });
 }
 
 function xrStarted({ canvas, gl }) {
   console.log("XR started", canvas, gl);
-  GL.initWithGL(gl);
+  // GL.initWithGL(gl);
+  // const scene = new SceneApp();
 
-  const scene = new SceneApp();
+  preload(gl).then(() => {
+    const scene = new SceneApp();
+  }, logError);
 }
 
 function logError(e) {
@@ -41,4 +45,8 @@ function logError(e) {
 
 function noSupport() {
   document.body.classList.add("no-xr");
+
+  preload().then(() => {
+    const scene = new SceneApp();
+  }, logError);
 }

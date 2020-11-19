@@ -20,19 +20,25 @@ const getLoadingImage = () =>
     img.src = "assets/css-img/loading.png";
   });
 
-const initAlfrid = () =>
+const initAlfrid = (mContext) =>
   new Promise((resolve, reject) => {
-    // CREATE CANVAS
-    const canvas = document.createElement("canvas");
-    const container = document.body.querySelector(".container");
-    canvas.className = "Main-Canvas";
-    container.appendChild(canvas);
-
-    const settings = Object.assign({ preserveDrawingBuffer: true }, params);
-    console.log("init Settings", settings);
-
     // INIT 3D TOOL
-    GL.init(canvas, settings);
+    if (mContext !== undefined) {
+      console.log("init with contexst", mContext);
+      GL.initWithGL(mContext);
+    } else {
+      // CREATE CANVAS
+      const canvas = document.createElement("canvas");
+      const container = document.body.querySelector(".container");
+      canvas.className = "Main-Canvas";
+      container.appendChild(canvas);
+
+      const settings = Object.assign({ preserveDrawingBuffer: true }, params);
+      console.log("init Settings", settings);
+
+      GL.init(canvas, settings);
+      console.log(canvas);
+    }
 
     resolve();
   });
@@ -93,10 +99,10 @@ const closeLoadingAnim = () =>
     }, 500);
   });
 
-const preload = (mParams = {}) =>
+const preload = (mContext, mParams = {}) =>
   new Promise((resolve, reject) => {
     params = mParams;
-    initAlfrid()
+    initAlfrid(mContext)
       .then(getLoadingImage)
       .then(createLoadingAnim)
       .then(loadAssets)
