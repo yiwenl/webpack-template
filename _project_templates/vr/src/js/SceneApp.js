@@ -15,7 +15,7 @@ class SceneApp {
     this._initViews();
 
     this.mtx = mat4.create();
-    mat4.translate(this.mtx, this.mtx, [0, 0, -1]);
+    // mat4.translate(this.mtx, this.mtx, [0, 0, -1]);
 
     // events
 
@@ -73,7 +73,7 @@ class SceneApp {
   }
 
   _renderScene() {
-    GL.rotate(this.mtx);
+    // GL.rotate(this.mtx);
     this._bAxis.draw();
     this._bDots.draw();
 

@@ -1,0 +1,324 @@
+<h1>Spatial Test</h1>
+<h3>You must be in roomscale guardian to walk</h3>
+<!--./adb reverse tcp:8888 tcp:8888-->
+
+
+
+
+
+<!--
+
+<a href='https://nexusstudios.com/webxr/labs/blur'>BLUR</a>
+
+<a href='https://nexusstudios.com/webxr/labs/bike02/'>Brake</a>
+
+<a href='https://nexusstudios.com/webxr/labs/bike01/'>POV</a>
+
+<a href='https://nexusstudios.com/webxr/labs/ui01/'>Proto TEST</a>
+
+-->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spatial test</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+	<script type="module">
+
+	  // Find the latest version by visiting https://unpkg.com/three. The URL will
+	  // redirect to the newest stable release.
+	  import * as THREE from './three.js-master/build/three.module.js';
+
+	  const scene = new THREE.Scene();
+
+	  import { VRButton } from './three.js-master/examples/jsm/webxr/VRButton.js';
+		document.body.appendChild( VRButton.createButton( renderer ) );
+		renderer.xr.enabled = true;
+	</script>		
+		<script src="js/three.js"></script>
+		<script src="three.js-master/examples/js/loaders/GLTFLoader.js"></script>
+		<script src='https://unpkg.com/three-mesh-ui/dist/three-mesh-ui.js'></script>
+		<script>
+			const scene = new THREE.Scene();
+
+
+			/**
+			* Bike
+			**/
+			var holder = new THREE.Group();
+
+			holder.position.set(1,0,1);
+
+			scene.add(holder);
+
+
+			// Instantiate a loader
+			const loader = new THREE.GLTFLoader();
+			var mesh;
+			/*
+			// Optional: Provide a DRACOLoader instance to decode compressed mesh data
+			const dracoLoader = new DRACOLoader();
+			dracoLoader.setDecoderPath( '/examples/js/libs/draco/' );
+			loader.setDRACOLoader( dracoLoader );
+			*/
+
+			// Load a glTF resource
+			loader.load(
+				// resource URL
+				'assets/bike.glb',
+				// called when the resource is loaded
+
+				function ( gltf ) {
+
+					mesh = gltf.scene.children[0];
+					mesh.material = new THREE.MeshBasicMaterial( { color: 0x333333 } );
+
+					holder.add(mesh);
+
+
+					mesh.position.z = -3;
+					mesh.scale.set(3,3,3);
+
+					gltf.animations; // Array<THREE.AnimationClip>
+					gltf.scene; // THREE.Group
+					gltf.scenes; // Array<THREE.Group>
+					gltf.cameras; // Array<THREE.Camera>
+					gltf.asset; // Object
+					console.log('done');
+
+				},
+				// called while loading is progressing
+				function ( xhr ) {
+
+					console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+				},
+				// called when loading has errors
+				function ( error ) {
+
+					console.log( 'An error happened' );
+
+				}
+			);
+
+
+			/**
+			* Cube
+			**/
+			
+
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+			document.body.appendChild( renderer.domElement );
+
+			const geometry = new THREE.BoxGeometry();
+			const material = new THREE.MeshBasicMaterial( { color: 0x333333 } );
+			const cube = new THREE.Mesh( geometry, material );
+			cube.position.x=1;
+			cube.position.z=-7;
+
+			holder.add( cube );
+
+			camera.position.z = 1;
+
+
+
+			/**
+			* Image
+			**/
+
+
+			// Create a texture loader so we can load our image file
+			var loader2 = new THREE.TextureLoader();
+
+			// Load an image file into a custom material
+			var material2 = new THREE.MeshLambertMaterial({
+			  map: loader2.load('assets/oeo.png')
+			});
+
+			// create a plane geometry for the image with a width of 10
+			// and a height that preserves the image's aspect ratio
+			//var geometry2 = new THREE.PlaneGeometry(10, 10*.75);
+			var geometry2 = new THREE.PlaneGeometry(10.16/3, 3.72/3);
+
+			// combine our image geometry and material into a mesh
+			var mesh2 = new THREE.Mesh(geometry2, material2);
+
+			// set the position of the image mesh in the x,y,z dimensions
+			mesh2.position.set(0,7,-15)
+
+			// add the image to the scene
+			holder.add(mesh2);
+
+
+			/**
+			* Lights
+			**/
+
+			// Add a point light with #fff color, .7 intensity, and 0 distance
+			var light = new THREE.PointLight( 0xffffff, 1, 0 );
+
+			// Specify the light's position
+			light.position.set(1, 1, 100 );
+
+			// Add the light to the scene
+			scene.add(light)
+
+
+			
+
+			
+
+			function addText(){					
+				const container = new ThreeMeshUI.Block({
+				 width: 1.2,
+				 height: 0.7,
+				 padding: 0.2,
+				 fontFamily: 'assets/Roboto-msdf.json',
+				 fontTexture: 'assets/Roboto-msdf.png',
+				});
+
+				//
+
+				container.add(
+
+				 new ThreeMeshUI.Text({
+				  content: "Hello Giorgia,\nSome text to be displayed"
+				 })
+				 
+				);
+
+				// scene is a THREE.Scene (see three.js)
+				holder.add( container );
+				container.position.set(0,0,-2)
+			}
+			//addText();
+
+
+			function addExit(){					
+				const container = new ThreeMeshUI.Block({
+				 width: 1.2*1.2,
+				 height: 2*1.2,
+				 padding: 0.2,
+				 fontFamily: 'assets/Roboto-msdf.json',
+				 fontTexture: 'assets/Roboto-msdf.png',
+				 fontSize: .15,
+				});
+
+				//
+
+				container.add(
+
+				 new ThreeMeshUI.Text({
+				  content: "Checkout"
+				 })
+				);
+
+
+
+				const basket = new ThreeMeshUI.Block({
+				 width: 1.2,
+				 height: 2,
+				 padding: 0.2,
+				 fontFamily: 'assets/Roboto-msdf.json',
+				 fontTexture: 'assets/Roboto-msdf.png',
+				 fontSize: .15
+				});
+
+				//
+
+				basket.add(
+				 new ThreeMeshUI.Text({
+				  content: "OeO Bike\n\n",
+				  fontSize: 0.1,
+				 })
+				);
+
+				basket.add(
+				 new ThreeMeshUI.Text({
+				  content: "\u00a31345",
+				  fontSize: 0.2,
+				 })
+				);
+				var checkout = new THREE.Group();
+
+
+				// scene is a THREE.Scene (see three.js)
+				checkout.add( container );
+				container.rotation.y = -2;
+
+				checkout.add( basket );
+				basket.position.set(1,.5,.5);
+				basket.rotation.y = -2;
+				holder.add(checkout);
+				checkout.position.set(1,1,-.5)
+
+			}
+			addExit();
+
+
+			function addZones(){
+				const geometry = new THREE.CylinderGeometry( .5, .5, .1, 8 );
+				const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+				const zone1 = new THREE.Mesh( geometry, material );
+				zone1.position.set(-2,-.5,-2);
+
+				holder.add( zone1 );
+
+				const zone2 = new THREE.Mesh( geometry, material );
+				zone2.position.set(-1,-.25,-5);
+				holder.add( zone2 );
+
+
+				const geometry2 = new THREE.CylinderGeometry( .15, .15, .025, 8 );
+
+				const zone3 = new THREE.Mesh( geometry2, material );
+				zone3.position.set(-1.4,.75,-3);
+				holder.add( zone3 );
+
+
+			}
+			addZones();
+
+
+			function addFloor(){
+				var geometry = new THREE.PlaneGeometry( 1000, 1000, 1, 1 );
+				var material = new THREE.MeshBasicMaterial( { color: 0x111111 } );
+				var floor = new THREE.Mesh( geometry, material );
+				floor.material.side = THREE.DoubleSide;
+				floor.rotation.x = 90;
+				floor.position.set(0,-2,0);
+				scene.add( floor ); 
+			}
+			//addFloor();
+
+
+
+			renderer.setAnimationLoop( function () {
+				if(mesh){
+					//mesh.rotation.x += 0.01;
+					//mesh.rotation.y += 0.01;
+				}
+				ThreeMeshUI.update();
+
+				renderer.render( scene, camera );
+
+			} );
+
+			
+
+		</script>
+	</body>
+</html>

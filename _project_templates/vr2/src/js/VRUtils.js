@@ -14,13 +14,13 @@ class VRUtils extends EventDispatcher {
         this._isSupported = supported;
         this._hasChecked = true;
         if (supported) {
-          // xrButton.innerHTML = 'Enter AR';
-          console.log("supported AR");
-          resolve("supported AR");
+          // xrButton.innerHTML = 'Enter VR';
+          console.log("supported VR");
+          resolve("supported VR");
         } else {
-          // xrButton.innerHTML = 'AR not found';
-          console.log("AR not suppoerted");
-          reject(new Error("AR not suppoerted"));
+          // xrButton.innerHTML = 'VR not found';
+          console.log("VR not suppoerted");
+          reject(new Error("VR not suppoerted"));
         }
       });
     });
@@ -28,7 +28,6 @@ class VRUtils extends EventDispatcher {
 
   start(mWebgl2 = false) {
     const contextTarget = mWebgl2 ? "webgl2" : "webgl";
-    console.log("contextTarget", contextTarget);
     return new Promise((resolve, reject) => {
       navigator.xr
         .requestSession("immersive-vr", {
@@ -55,6 +54,7 @@ class VRUtils extends EventDispatcher {
               this._onXRFrame(t, frame)
             );
             resolve({
+              session,
               canvas: this.canvas,
               gl: this._gl,
             });
