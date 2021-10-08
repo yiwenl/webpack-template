@@ -88,10 +88,12 @@ vec4 SRGBtoLINEAR(vec4 srgbIn)
 
 
 vec3 getNormal() {
+	vec2 uv = vTextureCoord;
+	uv.y = 1.0 - uv.y;
 	vec3 pos_dx = dFdx(vPosition);
 	vec3 pos_dy = dFdy(vPosition);
-	vec3 tex_dx = dFdx(vec3(vTextureCoord, 0.0));
-	vec3 tex_dy = dFdy(vec3(vTextureCoord, 0.0));
+	vec3 tex_dx = dFdx(vec3(uv, 0.0));
+	vec3 tex_dy = dFdy(vec3(uv, 0.0));
 	vec3 t = (tex_dy.t * pos_dx - tex_dx.t * pos_dy) / (tex_dx.s * tex_dy.t - tex_dy.s * tex_dx.t);
 
 	vec3 ng = normalize(vNormal);
@@ -101,7 +103,7 @@ vec3 getNormal() {
 	mat3 tbn = mat3(t, b, ng);
 
 #ifdef HAS_NORMALMAP
-	vec3 n = texture2D(uNormalMap, vTextureCoord).rgb;
+	vec3 n = texture2D(uNormalMap, uv).rgb;
 	n = normalize(tbn * ((2.0 * n - 1.0) * vec3(uNormalScale, uNormalScale, 1.0)));
 #else
 	// The tbn matrix is linearly interpolated, so we need to re-normalize
@@ -264,5 +266,6 @@ void main() {
 	
 	// output the fragment color
 	gl_FragColor        = vec4(pow(color,vec3(1.0/2.2)), baseColor.a);
+	gl_FragColor        = vec4(n, baseColor.a);
 
 }
